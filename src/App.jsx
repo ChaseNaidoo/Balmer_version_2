@@ -131,6 +131,13 @@ const Chatbot = () => {
     return response.json();
   };
 
+  const getLastBotMessage = () => {
+    const lastBotMessage = messages
+      .filter((msg) => msg.sender === "bot")
+      .slice(-1)[0]?.text || "";
+    return lastBotMessage;
+  };
+
   const handleSend = async () => {
     if (!userInput.trim()) return;
 
@@ -139,9 +146,11 @@ const Chatbot = () => {
     setExampleAnswers([]);
     setIsTyping(true);
 
+    const question = getLastBotMessage();
     const webhookData = await sendToWebhook({
       userInput,
       sessionId,
+      question,
     });
 
     setIsTyping(false);
@@ -174,9 +183,11 @@ const Chatbot = () => {
     setExampleAnswers([]);
     setIsTyping(true);
 
+    const question = getLastBotMessage();
     const webhookData = await sendToWebhook({
       userInput: answer,
       sessionId,
+      question,
     });
 
     setIsTyping(false);
