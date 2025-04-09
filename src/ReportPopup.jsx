@@ -20,9 +20,10 @@ const ReportPopup = ({ reportData, onClose }) => {
     }
   }, [isClosing, onClose]);
 
-  const agents = reportData.filter((item) => item.agent).map((item) => item.agent);
-  const overallRating = reportData.find((item) => item.overall_rating)?.overall_rating || 0;
-  const summaryText = reportData.find((item) => item.summary_text)?.summary_text || "";
+  // Extract data directly from reportData
+  const summaryText = reportData.output || "";
+  // Map agents to get the nested agent objects and take top 4
+  const topAgents = (reportData.agents || []).slice(0, 4).map((item) => item.agent);
 
   return (
     <>
@@ -33,17 +34,12 @@ const ReportPopup = ({ reportData, onClose }) => {
 
             <div className="report_content">
               <div className="agent_bubbles">
-                {agents.map((agent, index) => (
+                {topAgents.map((agent, index) => (
                   <div key={index} className="agent_bubble">
                     <div className="agent_name">{agent.name}</div>
-                    <div className="agent_rating">{agent.rating}</div>
+                    <div className="agent_rating">{agent.ranking_position}</div>
                   </div>
                 ))}
-              </div>
-
-              <div className="overall_bubble">
-                <div className="overall_rating">{overallRating}</div>
-                <div className="metric_label">Overall AI Potential</div>
               </div>
 
               <div className="summary_text">{summaryText}</div>
@@ -60,7 +56,17 @@ const ReportPopup = ({ reportData, onClose }) => {
 };
 
 ReportPopup.propTypes = {
-  reportData: PropTypes.array.isRequired,
+  reportData: PropTypes.shape({
+    output: PropTypes.string.isRequired,
+    agents: PropTypes.arrayOf(
+      PropTypes.shape({
+        agent: PropTypes.shape({
+          name: PropTypes.string.isRequired,
+          ranking_position: PropTypes.string.isRequired,
+        }).isRequired,
+      })
+    ).isRequired,
+  }).isRequired,
   onClose: PropTypes.func.isRequired,
 };
 

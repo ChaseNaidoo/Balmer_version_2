@@ -119,18 +119,6 @@ const Chatbot = () => {
     return response.json();
   };
 
-  const sendSubmitToN8N = async () => {
-    const response = await fetch(
-      "https://charliebessell.app.n8n.cloud/webhook/68b7569f-058a-47b8-9ce9-39ff92328ad7/chat",
-      {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ sessionId }),
-      }
-    );
-    return response.json();
-  };
-
   const getLastBotMessage = () => {
     const lastBotMessage = messages
       .filter((msg) => msg.sender === "bot")
@@ -156,20 +144,20 @@ const Chatbot = () => {
     setIsTyping(false);
 
     if (webhookData.output) {
-      setMessages((prev) => [...prev, { text: webhookData.output, sender: "bot" }]);
+      if (webhookData.report === false) {
+        setMessages((prev) => [...prev, { text: webhookData.output, sender: "bot" }]);
+      }
+        
       
       if (webhookData.example_answers) {
         setExampleAnswers(webhookData.example_answers);
       }
 
-      if (webhookData.output.includes("Fantastic, that should be it!")) {
+      if (webhookData.report === true && webhookData.output && webhookData.agents) {
+        setReportData({ output: webhookData.output, agents: webhookData.agents });
         setMessages((prev) => [
           ...prev,
-          {
-            text: "Are you ready to generate your report?",
-            sender: "bot",
-          },
-          { text: "", sender: "submit_button" },
+          { text: "Your report is ready! Click 'View Report' to see it.", sender: "bot" },
         ]);
       }
     }
@@ -199,14 +187,11 @@ const Chatbot = () => {
         setExampleAnswers(webhookData.example_answers);
       }
 
-      if (webhookData.output.includes("Fantastic, that should be it!")) {
+      if (webhookData.report === true && webhookData.output && webhookData.agents) {
+        setReportData({ output: webhookData.output, agents: webhookData.agents });
         setMessages((prev) => [
           ...prev,
-          {
-            text: "Are you ready to generate your report?",
-            sender: "bot",
-          },
-          { text: "", sender: "submit_button" },
+          { text: "Your report is ready! Click 'View Report' to see it.", sender: "bot" },
         ]);
       }
     }
@@ -215,39 +200,6 @@ const Chatbot = () => {
   const handleKeyDown = (event) => {
     if (event.key === "Enter") {
       handleSend();
-    }
-  };
-
-  const handleSubmit = async () => {
-    setIsTyping(true);
-    setTimeout(() => {
-      messagesEndRef.current?.scrollIntoView({ behavior: "smooth", block: "end" });
-    }, 50);
-
-    try {
-      const data = await sendSubmitToN8N();
-      setIsTyping(false);
-      if (data.result && Array.isArray(data.result)) {
-        setReportData(data.result);
-        setMessages((prev) => [
-          ...prev,
-          { text: "Your report is ready! Click 'View Report' to see it.", sender: "bot" },
-        ]);
-      } else {
-        setMessages((prev) => [
-          ...prev,
-          { text: "Error: Invalid report format received.", sender: "bot" },
-        ]);
-      }
-      messagesEndRef.current?.scrollIntoView({ behavior: "smooth", block: "end" });
-    } catch (error) {
-      setIsTyping(false);
-      setMessages((prev) => [
-        ...prev,
-        { text: "Error submitting answers. Please try again.", sender: "bot" },
-      ]);
-      messagesEndRef.current?.scrollIntoView({ behavior: "smooth", block: "end" });
-      console.error("Submit error:", error);
     }
   };
 
@@ -308,20 +260,10 @@ const Chatbot = () => {
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               className={`message ${
-                msg.sender === "bot"
-                  ? "bot-message"
-                  : msg.sender === "submit_button"
-                  ? "submit-button-container"
-                  : "user-message"
+                msg.sender === "bot" ? "bot-message" : "user-message"
               }`}
             >
-              {msg.sender === "submit_button" ? (
-                <button className="submit_button" onClick={handleSubmit}>
-                  GENERATE<img src="/Group 1.png" alt="Arrow" className="arrow-icon" />
-                </button>
-              ) : (
-                msg.text
-              )}
+              {msg.text}
             </motion.div>
           ))}
           {exampleAnswers.length > 0 && (
