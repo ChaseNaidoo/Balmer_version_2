@@ -146,14 +146,14 @@ const Chatbot = () => {
 
     setIsTyping(false);
 
-    if (webhookData.text) {
-      setMessages((prev) => [...prev, { text: webhookData.text, sender: "bot" }]);
+    if (webhookData.output) {
+      setMessages((prev) => [...prev, { text: webhookData.output, sender: "bot" }]);
       
       if (webhookData.example_answers) {
         setExampleAnswers(webhookData.example_answers);
       }
 
-      if (webhookData.text.includes("Fantastic, that should be it!")) {
+      if (webhookData.output.includes("Fantastic, that should be it!")) {
         setMessages((prev) => [
           ...prev,
           {
@@ -181,14 +181,14 @@ const Chatbot = () => {
 
     setIsTyping(false);
 
-    if (webhookData.text) {
-      setMessages((prev) => [...prev, { text: webhookData.text, sender: "bot" }]);
+    if (webhookData.output) {
+      setMessages((prev) => [...prev, { text: webhookData.output, sender: "bot" }]);
       
       if (webhookData.example_answers) {
         setExampleAnswers(webhookData.example_answers);
       }
 
-      if (webhookData.text.includes("Fantastic, that should be it!")) {
+      if (webhookData.output.includes("Fantastic, that should be it!")) {
         setMessages((prev) => [
           ...prev,
           {
