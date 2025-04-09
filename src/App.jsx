@@ -1,33 +1,20 @@
 import { useState, useEffect, useRef } from "react";
 import { motion } from "framer-motion";
 import "./App.css";
-import ReviewAnswersPopup from "./ReviewAnswersPopup";
 import ReportPopup from "./ReportPopup";
 
 const Chatbot = () => {
-  const [messages, setMessages] = useState(() =>
-    JSON.parse(localStorage.getItem("chatMessages")) || [
-      {
-        text: "Hi, I am the AI Business Acceleration bot. If you answer a few questions for me, I can evaluate the areas of your business that could benefit from using AI! This should take 5-10 mins. Let me know if you are ready and we can get started. Otherwise, if you have any more questions, feel free to ask.",
-        sender: "bot",
-      },
-    ]
-  );
-  const [fixedMessages, setFixedMessages] = useState(() =>
-    JSON.parse(localStorage.getItem("fixedMessages")) || []
-  );
+  const [messages, setMessages] = useState([
+    {
+      text: "Hi, I am the AI Business Acceleration bot. If you answer a few questions for me, I can evaluate the areas of your business that could benefit from using AI! This should take 5-10 mins. Let me know if you are ready and we can get started. Otherwise, if you have any more questions, feel free to ask.",
+      sender: "bot",
+    },
+  ]);
   const [userInput, setUserInput] = useState("");
-  const [questionIndex, setQuestionIndex] = useState(() =>
-    JSON.parse(localStorage.getItem("questionIndex")) || null
-  );
-  const [email, setEmail] = useState(() => localStorage.getItem("userEmail") || "");
-  const [answers, setAnswers] = useState(() => JSON.parse(localStorage.getItem("answers")) || {});
   const [isTyping, setIsTyping] = useState(false);
-  const [initialised, setInitialised] = useState(false);
-  const [exampleAnswers, setExampleAnswers] = useState(() =>
-    JSON.parse(localStorage.getItem("exampleAnswers")) || []
-  );
-  const [reportData, setReportData] = useState(() => JSON.parse(localStorage.getItem("reportData")) || null);
+  const [sessionId] = useState(() => crypto.randomUUID());
+  const [exampleAnswers, setExampleAnswers] = useState([]);
+  const [reportData, setReportData] = useState(null);
   const [showReportPopup, setShowReportPopup] = useState(false);
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
   const [borderGlowData, setBorderGlowData] = useState({
@@ -36,31 +23,15 @@ const Chatbot = () => {
     position: 0,
   });
 
-  const [lastSurveyQuestionIndex, setLastSurveyQuestionIndex] = useState(null);
   const messagesEndRef = useRef(null);
   const inputRef = useRef(null);
   const chatBoxRef = useRef(null);
   const circleTextRef = useRef(null);
 
-  const numOfQuestions = 14;
-  const progressPercentage =
-    questionIndex > 2 ? Math.round(((questionIndex - 2) / numOfQuestions) * 100) : 0;
-
   useEffect(() => {
     inputRef.current.focus();
-  }, []);
-
-  useEffect(() => {
-    localStorage.setItem("chatMessages", JSON.stringify(messages));
-    localStorage.setItem("questionIndex", JSON.stringify(questionIndex));
-    localStorage.setItem("userEmail", email);
-    localStorage.setItem("answers", JSON.stringify(answers));
-    localStorage.setItem("fixedMessages", JSON.stringify(fixedMessages));
-    localStorage.setItem("exampleAnswers", JSON.stringify(exampleAnswers));
-    localStorage.setItem("reportData", JSON.stringify(reportData));
-    localStorage.setItem("lastSurveyQuestionIndex", JSON.stringify(lastSurveyQuestionIndex));
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth", block: "end" });
-  }, [messages, questionIndex, email, answers, fixedMessages, exampleAnswers, reportData, lastSurveyQuestionIndex]);
+  }, [messages]);
 
   useEffect(() => {
     const handleMouseMove = (e) => {
@@ -136,9 +107,9 @@ const Chatbot = () => {
     });
   }, []);
 
-  const sendToChatN8N = async (data) => {
+  const sendToWebhook = async (data) => {
     const response = await fetch(
-      "https://liamalbrecht.app.n8n.cloud/webhook/15695c64-0d39-4362-82be-7c9e73f1de4f",
+      "https://charliebessell.app.n8n.cloud/webhook/68b7569f-058a-47b8-9ce9-39ff92328ad7/chat",
       {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -148,13 +119,13 @@ const Chatbot = () => {
     return response.json();
   };
 
-  const sendSubmitToN8N = async (email) => {
+  const sendSubmitToN8N = async () => {
     const response = await fetch(
-      "https://liamalbrecht.app.n8n.cloud/webhook/25e0bbd0-a49d-4106-b4e3-973ecb98f202",
+      "https://charliebessell.app.n8n.cloud/webhook/68b7569f-058a-47b8-9ce9-39ff92328ad7/chat",
       {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email }),
+        body: JSON.stringify({ sessionId }),
       }
     );
     return response.json();
@@ -168,81 +139,29 @@ const Chatbot = () => {
     setExampleAnswers([]);
     setIsTyping(true);
 
-    const currentFixedQuestion = fixedMessages.length > 0 ? fixedMessages[fixedMessages.length - 1].text : "";
-    const lastBotMessage = messages
-      .filter((msg) => msg.sender === "bot")
-      .slice(-1)[0]?.text || "";
-
-    let emailInput = "";
-    if (questionIndex === 1) {
-      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-      if (!emailRegex.test(userInput)) {
-        setMessages((prev) => [
-          ...prev,
-          { text: "Please provide a valid email address (e.g., example@domain.com) before continuing or asking any questions.", sender: "bot" },
-        ]);
-        setIsTyping(false);
-        inputRef.current.focus();
-        return;
-      }
-      setEmail(userInput);
-      emailInput = userInput;
-    }
-
-    let emailToSend = "";
-    if (!email) {
-      emailToSend = emailInput;
-    } else {
-      emailToSend = email;
-    }
-
-    const chatData = await sendToChatN8N({
+    const webhookData = await sendToWebhook({
       userInput,
-      questionIndex,
-      emailToSend,
-      answers,
-      lastSurveyQuestionIndex,
-      currentFixedQuestion,
-      lastBotMessage,
-      initialised,
+      sessionId,
     });
 
     setIsTyping(false);
 
-    if (chatData.text) {
-      setMessages((prev) => [...prev, { text: chatData.text, sender: "bot" }]);
+    if (webhookData.text) {
+      setMessages((prev) => [...prev, { text: webhookData.text, sender: "bot" }]);
+      
+      if (webhookData.example_answers) {
+        setExampleAnswers(webhookData.example_answers);
+      }
 
-      if (!chatData.isDeviatedAnswer) {
-        let nextIndex;
-
-        if (questionIndex === null) {
-          nextIndex = 1;
-        } else {
-          nextIndex = questionIndex + 1;
-        }
-
-        setAnswers((prev) => ({ ...prev, [questionIndex]: userInput }));
-        setQuestionIndex(nextIndex);
-        setLastSurveyQuestionIndex(nextIndex);
-        setInitialised(true);
-
-        if (chatData.example_answers) setExampleAnswers(chatData.example_answers);
-        else setExampleAnswers([]);
-
-        if (chatData.fixedQuestion) {
-          setFixedMessages((prev) => [...prev, { text: chatData.fixedQuestion }]);
-        }
-
-        if (chatData.text.includes("Fantastic, that should be it!")) {
-          setMessages((prev) => [
-            ...prev,
-            {
-              text: "In order to generate your report, please review your answers first by clicking 'Review Answers' below.",
-              sender: "bot",
-            },
-          ]);
-          setExampleAnswers([]);
-        }
+      if (webhookData.text.includes("Fantastic, that should be it!")) {
+        setMessages((prev) => [
+          ...prev,
+          {
+            text: "Are you ready to generate your report?",
+            sender: "bot",
+          },
+          { text: "", sender: "submit_button" },
+        ]);
       }
     }
 
@@ -255,61 +174,29 @@ const Chatbot = () => {
     setExampleAnswers([]);
     setIsTyping(true);
 
-    const currentFixedQuestion = fixedMessages.length > 0 ? fixedMessages[fixedMessages.length - 1].text : "";
-    const lastBotMessage = messages
-      .filter((msg) => msg.sender === "bot")
-      .slice(-1)[0]?.text || "";
-
-    const chatData = await sendToChatN8N({
+    const webhookData = await sendToWebhook({
       userInput: answer,
-      questionIndex,
-      email,
-      answers,
-      lastSurveyQuestionIndex,
-      currentFixedQuestion,
-      lastBotMessage,
-      initialised,
+      sessionId,
     });
 
     setIsTyping(false);
 
-    if (chatData.text) {
-      setMessages((prev) => [...prev, { text: chatData.text, sender: "bot" }]);
+    if (webhookData.text) {
+      setMessages((prev) => [...prev, { text: webhookData.text, sender: "bot" }]);
+      
+      if (webhookData.example_answers) {
+        setExampleAnswers(webhookData.example_answers);
+      }
 
-      if (!chatData.isDeviatedAnswer) {
-        const nextIndex = chatData.questionIndex || questionIndex + 1;
-
-        if (nextIndex === 2) {
-          if (!answer.includes("@")) {
-            setMessages((prev) => [
-              ...prev,
-              { text: "Please provide a valid email address before continuing.", sender: "bot" },
-            ]);
-            return;
-          }
-          setEmail(answer);
-        }
-
-        setAnswers((prev) => ({ ...prev, [questionIndex]: answer }));
-        setQuestionIndex(nextIndex);
-        setLastSurveyQuestionIndex(nextIndex);
-
-        if (chatData.example_answers) setExampleAnswers(chatData.example_answers);
-        else setExampleAnswers([]);
-
-        if (chatData.fixedQuestion) {
-          setFixedMessages((prev) => [...prev, { text: chatData.fixedQuestion }]);
-        }
-
-        if (chatData.text.includes("Fantastic, that should be it!")) {
-          setMessages((prev) => [
-            ...prev,
-            {
-              text: "In order to generate your report, please review your answers first by clicking 'Review Answers' below.",
-              sender: "bot",
-            },
-          ]);
-        }
+      if (webhookData.text.includes("Fantastic, that should be it!")) {
+        setMessages((prev) => [
+          ...prev,
+          {
+            text: "Are you ready to generate your report?",
+            sender: "bot",
+          },
+          { text: "", sender: "submit_button" },
+        ]);
       }
     }
   };
@@ -320,49 +207,14 @@ const Chatbot = () => {
     }
   };
 
-  const restartChat = () => {
-    localStorage.clear();
-    setMessages([
-      {
-        text: "Hi, I am the AI Business Acceleration bot. If you answer a few questions for me, I can evaluate the areas of your business that could benefit from using AI! This should take 5-10 mins. Let me know if you are ready and we can get started. Otherwise, if you have any more questions, feel free to ask.",
-        sender: "bot",
-      },
-    ]);
-    setQuestionIndex(null);
-    setEmail("");
-    setAnswers({});
-    setFixedMessages([]);
-    setInitialised(false);
-    setExampleAnswers([]);
-    setReportData(null);
-    setShowReportPopup(false);
-    setLastSurveyQuestionIndex(null);
-  };
-
-  const handleFirstClose = () => {
-    setMessages((prev) => [
-      ...prev,
-      { text: "Are you ready to generate your report?", sender: "bot" },
-      { text: "", sender: "submit_button" },
-    ]);
-  };
-
   const handleSubmit = async () => {
-    if (!email) {
-      setMessages((prev) => [
-        ...prev,
-        { text: "No email provided. Please provide an email before continuing.", sender: "bot" },
-      ]);
-      return;
-    }
-
     setIsTyping(true);
     setTimeout(() => {
       messagesEndRef.current?.scrollIntoView({ behavior: "smooth", block: "end" });
     }, 50);
 
     try {
-      const data = await sendSubmitToN8N(email);
+      const data = await sendSubmitToN8N();
       setIsTyping(false);
       if (data.result && Array.isArray(data.result)) {
         setReportData(data.result);
@@ -415,8 +267,8 @@ const Chatbot = () => {
       <div className="particle"></div>
       <div className="particle"></div>
       <div className="particle"></div>
-        <h1>BALMER AGENCY</h1>
-        <p>AI Business Acceleration Bot</p>
+      <h1>BALMER AGENCY</h1>
+      <p>AI Business Acceleration Bot</p>
       <div className="background-grid">
         <img src="/balmer_background.jpg" alt="Background 1" className="background-image large-image" />
         <img src="/balmer_background2.jpg" alt="Background 2" className="background-image small-image" />
@@ -438,9 +290,6 @@ const Chatbot = () => {
         }}
         data-glow-border={borderGlowData.border}
       >
-        <div className="progress-bar-container">
-          <div className="progress-bar" style={{ width: `${progressPercentage}%` }} />
-        </div>
         <div className="messages">
           {messages.map((msg, index) => (
             <motion.div
@@ -515,24 +364,7 @@ const Chatbot = () => {
         </div>
         <div className="button-group">
           <div className="button-row">
-            <button className="restart_button" onClick={restartChat}>
-              RESTART<img src="/Group 2.png" alt="Arrow" className="arrow-icon2" />
-            </button>
-            {messages.some((msg) =>
-              msg.text.includes(
-                "In order to generate your report, please review your answers first by clicking 'Review Answers' below."
-              )
-            ) && (
-              <ReviewAnswersPopup
-                messages={messages}
-                answers={answers}
-                email={email}
-                fixedMessages={fixedMessages}
-                updateAnswers={setAnswers}
-                updateEmail={setEmail}
-                onFirstClose={handleFirstClose}
-              />
-            )}
+            {/* Removed restart button */}
           </div>
           {reportData && (
             <button className="view_report_button" onClick={handleViewReport}>
