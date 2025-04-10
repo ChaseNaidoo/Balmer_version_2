@@ -472,7 +472,7 @@
   }
 
   .summary_text {
-    width: 120%;
+    width: 60%;
     max-width: 1000px;
     grid-column: 1 / 2;
     grid-row: 1 / 3;
@@ -482,9 +482,9 @@
 
   .agent_bubbles {
     flex-direction: column; /* Single column */
-    width: 150%;
+    width: 110%;
     max-width: 1700px;
-    margin-left: 60%;
+    margin-left: -121%;
     grid-column: 2 / 3;
     grid-row: 1 / 2;
     gap: 15px;
@@ -509,5 +509,6 @@
     grid-row: 2 / 3;
     justify-self: start;
     margin-left: 0%;
+    margin-bottom: 10%;
   }
 }
