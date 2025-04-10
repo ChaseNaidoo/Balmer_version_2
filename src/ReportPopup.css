@@ -22,8 +22,8 @@
   background-color: rgb(22, 22, 22);
   border-radius: 20px;
   box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
-  width: 100vw; /* Full viewport width by default */
-  height: 100vh; /* Full viewport height by default */
+  width: 100vw;
+  height: 100vh;
   display: flex;
   flex-direction: column;
   padding: 20px;
@@ -58,11 +58,10 @@
 }
 
 .agent_bubbles {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+  display: flex;
+  flex-direction: column; /* Single column, stacked vertically */
   width: 100%;
   gap: 20px;
-  justify-content: center;
 }
 
 .agent_bubble {
@@ -210,31 +209,19 @@
   .summary_text {
     font-size: clamp(12px, 3vw, 14px);
     padding: 15px;
-    width: 100%; /* Full width on top */
-    order: 1; /* Ensure it’s first */
-  }
-
-  .overall_bubble {
     width: 100%;
-    max-width: 99%;
-    height: 80px;
-    font-size: clamp(16px, 4vw, 18px);
-    order: 2; /* Below summary_text */
-  }
-
-  .metric_label {
-    font-size: clamp(10px, 2.5vw, 12px);
+    order: 1;
   }
 
   .agent_bubbles {
-    grid-template-columns: repeat(2, 1fr); /* 2x2 grid */
+    flex-direction: column; /* Single column */
     width: 100%;
     gap: 10px;
-    order: 3; /* Below overall_bubble */
+    order: 2;
   }
 
   .agent_bubble {
-    width: 100%; /* Full width of grid cell */
+    width: 100%;
     height: 60px;
     font-size: clamp(10px, 2.5vw, 12px);
   }
@@ -247,13 +234,26 @@
     font-size: clamp(8px, 2vw, 10px);
   }
 
+  .overall_bubble {
+    width: 100%;
+    max-width: 99%;
+    height: 80px;
+    font-size: clamp(16px, 4vw, 18px);
+    order: 3;
+  }
+
+  .metric_label {
+    font-size: clamp(10px, 2.5vw, 12px);
+  }
+
   .close_button {
     padding: 6px 15px;
     font-size: clamp(10px, 3vw, 12px);
     width: 40%;
     min-width: 100px;
     margin-left: 1.5%;
-    order: 4; /* Last item */
+    order: 4;
+    margin-bottom: 25%;
   }
 }
 
@@ -278,33 +278,22 @@
   .summary_text {
     font-size: clamp(14px, 3vw, 16px);
     padding: 15px;
-    width: 100%; /* Full width on top */
-    order: 1; /* Ensure it’s first */
-  }
-
-  .overall_bubble {
     width: 100%;
-    max-width: 99.5%;
-    height: 150px;
-    font-size: clamp(18px, 4vw, 20px);
-    order: 2; /* Below summary_text */
-  }
-
-  .metric_label {
-    font-size: clamp(12px, 2.5vw, 14px);
+    order: 1;
   }
 
   .agent_bubbles {
-    grid-template-columns: repeat(2, 1fr); /* 2x2 grid */
+    flex-direction: column; /* Single column */
     width: 100%;
     gap: 15px;
-    order: 3; /* Below overall_bubble */
+    order: 2;
   }
 
   .agent_bubble {
-    width: 100%; /* Full width of grid cell */
-    height: 80px;
+    width: 100%;
+    height: 60px;
     font-size: clamp(12px, 2.5vw, 14px);
+    border-radius: 15px;
   }
 
   .agent_rating {
@@ -315,12 +304,25 @@
     font-size: clamp(10px, 2vw, 12px);
   }
 
+  .overall_bubble {
+    width: 100%;
+    max-width: 99.5%;
+    height: 150px;
+    font-size: clamp(18px, 4vw, 20px);
+    order: 3;
+  }
+
+  .metric_label {
+    font-size: clamp(12px, 2.5vw, 14px);
+  }
+
   .close_button {
     padding: 7px 18px;
     font-size: clamp(12px, 2.5vw, 14px);
     width: 30%;
     min-width: 110px;
-    order: 4; /* Last item */
+    order: 4;
+    margin-bottom: 10%;
   }
 }
 
@@ -340,54 +342,55 @@
 
   .report_content {
     display: grid;
-    grid-template-columns: 6fr 4fr; /* 60% summary, 40% overall + agents */
-    grid-template-rows: auto auto auto; /* Extra row for stacked agents */
+    grid-template-columns: 6fr 2fr 2fr; /* Summary | Agents | Overall */
+    grid-template-rows: auto auto;
     gap: 20px;
     align-items: start;
   }
 
   .summary_text {
-    max-width: 100%; /* Full width of its 60% column */
+    max-width: 100%;
     grid-column: 1 / 2;
-    grid-row: 1 / 4; /* Span all rows */
+    grid-row: 1 / 3;
     min-width: 0;
-  }
-
-  .overall_bubble {
-    width: 45%; /* Full width of its 40% column */
-    max-width: 250px;
-    grid-column: 2 / 3;
-    grid-row: 1 / 2;
-    margin-left: -60%;
+    align-self: start; /* Align to top */
   }
 
   .agent_bubbles {
-    display: flex;
-    flex-direction: column; /* Stack vertically */
+    flex-direction: column; /* Single column */
     width: 100%;
-    max-width: 120px; /* Match agent_bubble width */
-    margin-left: -60%; /* Align with overall_bubble */
+    max-width: 200px;
+    margin-left: -120%;
     grid-column: 2 / 3;
-    grid-row: 2 / 3;
-    gap: 15px; /* Space between stacked bubbles */
+    grid-row: 1 / 2;
+    gap: 15px;
+    align-self: start; /* Align to top with summary_text */
   }
 
   .agent_bubble {
-    width: 170px; /* Consistent width */
+    width: 100%;
     height: 80px;
-    margin: 0; /* Remove negative margins */
+  }
+
+  .overall_bubble {
+    width: 100%;
+    max-width: 250px;
+    grid-column: 3 / 4;
+    grid-row: 1 / 2;
+    align-self: start; /* Align to top */
   }
 
   .close_button {
-    grid-column: 1 / 3;
-    grid-row: 4 / 5; /* Move below stacked agents */
-    justify-self: center;
-    margin-top: 1.5%;
-    margin-left: 0; /* Center override */
+    grid-column: 1 / 4;
+    grid-row: 2 / 3;
+    justify-self: start;
+    margin-top: 10px;
+    margin-left: 0%;
     padding: 8px 20px;
     font-size: 14px;
     width: 10%;
     min-width: 120px;
+    margin-bottom: 10%;
   }
 }
 
@@ -403,41 +406,50 @@
 
   .report_content {
     display: grid;
-    grid-template-columns: 6fr 4fr; /* 60% summary, 40% overall + agents */
+    grid-template-columns: 6fr 2fr 2fr; /* Summary | Agents | Overall */
     grid-template-rows: auto auto;
     gap: 20px;
     align-items: start;
   }
 
   .summary_text {
-    max-width: 100%; /* Full width of its 60% column */
+    max-width: 100%;
     grid-column: 1 / 2;
     grid-row: 1 / 3;
     min-width: 0;
-  }
-
-  .overall_bubble {
-    width: 100%; /* Full width of its 40% column */
-    max-width: 250px;
-    grid-column: 2 / 3;
-    grid-row: 1 / 2;
-    margin-left: -60%;
+    align-self: start; /* Align to top */
   }
 
   .agent_bubbles {
-    grid-template-columns: repeat(2, 1fr);
-    margin-left: -38%;
-    margin-top: -10%;
-    max-width: 50px;
+    flex-direction: column; /* Single column */
+    width: 125%;
+    max-width: 1000px;
+    margin-left: -123%;
     grid-column: 2 / 3;
-    grid-row: 2 / 3;
+    grid-row: 1 / 2;
+    gap: 15px;
+    align-self: start; /* Align to top with summary_text */
+  }
+
+  .agent_bubble {
+    width: 100%;
+    height: 80px;
+  }
+
+  .overall_bubble {
+    width: 100%;
+    max-width: 250px;
+    grid-column: 3 / 4;
+    grid-row: 1 / 2;
+    align-self: start; /* Align to top */
   }
 
   .close_button {
-    grid-column: 1 / 3;
-    grid-row: 3 / 4;
-    justify-self: center;
-    margin-left: 0; /* Center override */
+    grid-column: 1 / 4;
+    grid-row: 2 / 3;
+    justify-self: start;
+    margin-left: 1.5%;
+    margin-bottom: 5%;
   }
 }
 
@@ -453,40 +465,49 @@
 
   .report_content {
     display: grid;
-    grid-template-columns: 6fr 4fr; /* 60% summary, 40% overall + agents */
+    grid-template-columns: 6fr 2fr 2fr; /* Summary | Agents | Overall */
     grid-template-rows: auto auto;
     gap: 20px;
     align-items: start;
   }
 
   .summary_text {
-    max-width: 100%; /* Full width of its 60% column */
+    width: 120%;
+    max-width: 1000px;
     grid-column: 1 / 2;
     grid-row: 1 / 3;
     min-width: 0;
-  }
-
-  .overall_bubble {
-    width: 100%; /* Full width of its 40% column */
-    max-width: 250px;
-    grid-column: 2 / 3;
-    grid-row: 1 / 2;
-    margin-left: -60%;
+    align-self: start; /* Align to top */
   }
 
   .agent_bubbles {
-    grid-template-columns: repeat(2, 1fr);
-    margin-left: -38%;
-    margin-top: -10%;
-    max-width: 50px;
+    flex-direction: column; /* Single column */
+    width: 150%;
+    max-width: 1700px;
+    margin-left: 60%;
     grid-column: 2 / 3;
-    grid-row: 2 / 3;
+    grid-row: 1 / 2;
+    gap: 15px;
+    align-self: start; /* Align to top with summary_text */
+  }
+
+  .agent_bubble {
+    width: 100%;
+    height: 80px;
+  }
+
+  .overall_bubble {
+    width: 100%;
+    max-width: 250px;
+    grid-column: 3 / 4;
+    grid-row: 1 / 2;
+    align-self: start; /* Align to top */
   }
 
   .close_button {
-    grid-column: 1 / 3;
-    grid-row: 3 / 4;
-    justify-self: center;
-    margin-left: 0; /* Center override */
+    grid-column: 1 / 4;
+    grid-row: 2 / 3;
+    justify-self: start;
+    margin-left: 0%;
   }
 }
