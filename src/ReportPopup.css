@@ -1,4 +1,22 @@
 /* Popup container */
+.summary_text > p {
+  position: relative;
+  font-size: 16px;
+  color: rgb(232, 230, 230);
+  margin-top: 5px;
+}
+
+.summary_text > .h1 {
+  font-weight: bold;
+  font-size: 24px;
+  
+}
+
+.summary_text > .h2 {
+  font-weight: bold;
+  font-size: 18px;
+  margin-top: 10px;
+}
 .popup_container {
   position: fixed;
   top: 0;
@@ -436,13 +454,7 @@
     height: 80px;
   }
 
-  .overall_bubble {
-    width: 100%;
-    max-width: 250px;
-    grid-column: 3 / 4;
-    grid-row: 1 / 2;
-    align-self: start; /* Align to top */
-  }
+  
 
   .close_button {
     grid-column: 1 / 4;

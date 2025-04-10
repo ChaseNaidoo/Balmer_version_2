@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import PropTypes from "prop-types";
 import "./ReportPopup.css";
+import parse from 'html-react-parser'
 
 const ReportPopup = ({ reportData, onClose }) => {
   const [showPopup, setShowPopup] = useState(true);
@@ -42,7 +43,7 @@ const ReportPopup = ({ reportData, onClose }) => {
                 ))}
               </div>
 
-              <div className="summary_text">{summaryText}</div>
+              <div className="summary_text">{parse(summaryText)}</div>
             </div>
 
             <button className="close_button" onClick={handleClose}>
