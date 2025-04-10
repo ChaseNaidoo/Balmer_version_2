@@ -308,6 +308,7 @@ const Chatbot = () => {
             onChange={(e) => setUserInput(e.target.value)}
             onKeyDown={handleKeyDown}
             placeholder="Type here..."
+            disabled={isTyping}
           />
           <button className="send-button" onClick={handleSend}>
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2">
