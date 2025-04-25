@@ -180,7 +180,23 @@
   margin-left: 1.5%;
 }
 
-.close_button:hover {
+.download_button {
+  background-color: transparent;
+  color: rgb(232, 230, 230);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 50px;
+  padding: 8px 20px;
+  font-size: 14px;
+  width: 13%;
+  min-width: 120px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+  font-weight: bold;
+  margin-top: 20px;
+  margin-left: 1.5%;
+}
+
+.close_button:hover, .download_button:hover {
   background-color: #ffffff20;
 }
 
@@ -267,11 +283,16 @@
   .close_button {
     padding: 6px 15px;
     font-size: clamp(10px, 3vw, 12px);
-    width: 40%;
+    width: 30%;
     min-width: 100px;
     margin-left: 1.5%;
     order: 4;
     margin-bottom: 25%;
+  }
+
+  .download_button {
+    width: 43%;
+    font-size: clamp(10px, 3vw, 12px);
   }
 }
 
@@ -334,10 +355,14 @@
     font-size: clamp(12px, 2.5vw, 14px);
   }
 
+  .download_button {
+    width: 22%;
+  }
+
   .close_button {
     padding: 7px 18px;
     font-size: clamp(12px, 2.5vw, 14px);
-    width: 30%;
+    width: 20%;
     min-width: 110px;
     order: 4;
     margin-bottom: 10%;
@@ -403,12 +428,17 @@
     grid-row: 2 / 3;
     justify-self: start;
     margin-top: 10px;
-    margin-left: 0%;
+    margin-left: 1%;
     padding: 8px 20px;
     font-size: 14px;
     width: 10%;
     min-width: 120px;
     margin-bottom: 10%;
+  }
+
+  .download_button {
+    width: 15%;
+    margin-left: 0.5%;
   }
 }
 

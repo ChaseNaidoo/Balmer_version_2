@@ -231,7 +231,7 @@ const Chatbot = () => {
       <div className="particle"></div>
       <div className="particle"></div>
       <h1>BALMER AGENCY</h1>
-      <p>AI Business Acceleration Bot</p>
+      <p>AI Business Acceleration Audit</p>
       <div className="background-grid">
         <img src="/balmer_background.jpg" alt="Background 1" className="background-image large-image" />
         <img src="/balmer_background2.jpg" alt="Background 2" className="background-image small-image" />
