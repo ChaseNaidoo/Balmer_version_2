@@ -230,7 +230,7 @@ const Chatbot = () => {
       <div className="particle"></div>
       <div className="particle"></div>
       <div className="particle"></div>
-      <h1>BALMER AGENCY</h1>
+      <img src="/balmer_logo.svg" alt="BALMER AGENCY" className="chat-container-logo"></img>
       <p>AI Business Acceleration Audit</p>
       <div className="background-grid">
         <img src="/balmer_background.jpg" alt="Background 1" className="background-image large-image" />

@@ -513,15 +513,14 @@
 }
 
 /* Header and paragraph */
-.chat-container h1 {
+.chat-container-logo {
   font-size: 50px;
-  font-weight: bold;
-  color: white;
   position: absolute;
-  top: 0;
+  top: -9%;
   left: 1.5%;
   margin: 20px 0 0 0;
   padding: 0;
+  width: 11rem;
   z-index: 1;
 }
 
@@ -570,9 +569,9 @@
     padding: 0 2%;
   }
 
-  .chat-container h1 {
-    font-size: clamp(20px, 6vw, 24px);
-    top: 0;
+  .chat-container-logo {
+    width: 5rem;
+    top: -4%;
     left: 2%;
     margin: 10px 0 0 0;
   }
@@ -742,9 +741,9 @@
     padding: 0 2%;
   }
 
-  .chat-container h1 {
-    font-size: clamp(24px, 5vw, 28px);
-    top: 0;
+  .chat-container-logo {
+    width: 6rem;
+    top: -5%;
     left: 2%;
     margin: 15px 0 0 0;
   }
@@ -820,9 +819,9 @@
     padding-right: 2%;
   }
 
-  .chat-container h1 {
-    font-size: clamp(30px, 4vw, 40px);
-    top: 0;
+  .chat-container-logo {
+    width: 8rem;
+    top: -6%;
     left: 2%;
     margin: 15px 0 0 0;
   }
@@ -899,9 +898,8 @@
     padding-right: 1.5%;
   }
 
-  .chat-container h1 {
-    font-size: 40px;
-    top: 0;
+  .chat-container-logo {
+    top: -8%;
     left: 1.5%;
     margin: 20px 0 0 0;
   }
@@ -983,8 +981,7 @@
 
 /* Desktop (1441px and up) */
 @media screen and (min-width: 1441px) {
-  .chat-container h1 {
-    font-size: 50px;
+  .chat-container-logo {
     top: -1.5%;
     left: 1.5%;
     margin: 20px 0 0 0;
