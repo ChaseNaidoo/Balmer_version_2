@@ -26,9 +26,8 @@ const ReportPopup = ({ reportData, onClose }) => {
       const bubbleBgColor = "rgb(30, 30, 30)"; // Agent bubbles
       const summaryBgColor = "#1A1A1A"; // Summary background
       const borderColor = "rgb(71, 71, 71)"; // Borders
-      const chartGray = "#D3D3D3"; // Light gray for chart elements
-      const chartBlue = "#4A90E2"; // Blue for bars
-      const altShade = "#2A2A2A"; // Lighter shade for gradient and table rows
+      const chartGray = "#D3D3D3"; // Light gray for icons
+      const altShade = "#2A2A2A"; // Lighter shade for gradient
 
       // Helper to convert rgba or rgb to RGB array for jsPDF
       const rgbaToRgb = (rgba) => {
@@ -158,133 +157,6 @@ const ReportPopup = ({ reportData, onClose }) => {
         doc.setFontSize(10);
         doc.setTextColor(textColor);
         doc.text(`Rank: ${agent.ranking_position}`, x + bubbleWidth / 2 + 2, y + 15, { align: "center" });
-      });
-
-      // Move yOffset to the bottom of the tallest section
-      yOffset = Math.max(yOffset + 90, agentYOffset + 4 * (bubbleHeight + 2)) + 5;
-
-      yOffset += 5;
-
-      // Section 3: Bar Graph - Agent Performance Metrics (Bottom) with Icon
-      const chartX = 15;
-      const chartWidth = 180;
-      const chartHeight = 70;
-      doc.setFont("helvetica", "bold");
-      doc.setFontSize(10);
-      doc.setTextColor(textColor);
-      doc.text("Agent Performance", chartX + 5, yOffset);
-      doc.setFillColor(chartGray);
-      doc.rect(chartX, yOffset - 3, 1, 3, "F");
-      doc.rect(chartX + 2, yOffset - 3, 1, 4, "F");
-      doc.rect(chartX + 4, yOffset - 3, 1, 2, "F");
-
-      yOffset += 5;
-
-      doc.setFillColor(summaryBgColor);
-      doc.setDrawColor(...rgbaToRgb(borderColor));
-      doc.setLineWidth(0.1);
-      doc.roundedRect(chartX, yOffset, chartWidth, chartHeight, 2, 2, "FD");
-
-      doc.setDrawColor(chartGray);
-      doc.setLineWidth(0.05);
-      const gridLines = [25, 50, 75];
-      gridLines.forEach((score) => {
-        const yPos = yOffset + chartHeight - 10 - (score / 100) * (chartHeight - 20);
-        doc.line(chartX + 10, yPos, chartX + chartWidth - 10, yPos);
-      });
-
-      const yAxisX = chartX + 10;
-      doc.setDrawColor(chartGray);
-      doc.setLineWidth(0.1);
-      doc.line(yAxisX, yOffset + 5, yAxisX, yOffset + chartHeight - 10);
-      const yLabels = [100, 75, 50, 25, 0];
-      yLabels.forEach((label, index) => {
-        const yPos = yOffset + 5 + (index * (chartHeight - 15)) / 4;
-        doc.setFontSize(6);
-        doc.setTextColor(chartGray);
-        doc.text(label.toString(), yAxisX - 5, yPos + 1, { align: "right" });
-        doc.line(yAxisX - 2, yPos, yAxisX, yPos);
-      });
-
-      const performanceScores = [80, 65, 50, 40];
-      const barWidth = (chartWidth - 40) / topAgents.length - 10;
-      const maxScore = Math.max(...performanceScores);
-
-      topAgents.forEach((agent, index) => {
-        const barHeight = (performanceScores[index] / maxScore) * (chartHeight - 20);
-        const x = chartX + 20 + index * (barWidth + 10);
-        doc.setFillColor(chartBlue);
-        doc.rect(x, yOffset + chartHeight - 10 - barHeight, barWidth, barHeight, "F");
-        doc.setFontSize(8);
-        doc.setTextColor(chartGray);
-        doc.text(agent.name, x + barWidth / 2, yOffset + chartHeight - 5, { align: "center" });
-      });
-
-      yOffset += chartHeight + 5;
-
-      yOffset += 5;
-
-      // Section 4: Agent Metrics Table with Icon
-      doc.setFont("helvetica", "bold");
-      doc.setFontSize(10);
-      doc.setTextColor(textColor);
-      doc.text("Agent Metrics", 20, yOffset);
-      doc.setDrawColor(chartGray);
-      doc.setLineWidth(0.2);
-      doc.rect(15, yOffset - 4, 4, 4);
-      doc.line(15, yOffset - 2, 19, yOffset - 2);
-      doc.line(17, yOffset - 4, 17, yOffset);
-
-      yOffset += 5;
-
-      const tableWidth = 180;
-      const tableHeight = 25;
-      doc.setFillColor(summaryBgColor);
-      doc.setDrawColor(...rgbaToRgb(borderColor));
-      doc.setLineWidth(0.1);
-      doc.roundedRect(15, yOffset, tableWidth, tableHeight, 2, 2, "FD");
-
-      const columns = ["Agent", "Rank", "Performance", "Interactions"];
-      const colWidths = [50, 30, 50, 50];
-      let tableX = 15;
-      doc.setFont("helvetica", "bold");
-      doc.setFontSize(7);
-      doc.setTextColor(textColor);
-      columns.forEach((header, index) => {
-        doc.text(header, tableX + colWidths[index] / 2, yOffset + 5, { align: "center" });
-        tableX += colWidths[index];
-      });
-
-      doc.setDrawColor(...rgbaToRgb(borderColor));
-      doc.setLineWidth(0.1);
-      tableX = 15;
-      for (let i = 0; i < columns.length - 1; i++) {
-        tableX += colWidths[i];
-        doc.line(tableX, yOffset, tableX, yOffset + tableHeight);
-      }
-
-      const mockInteractions = [120, 95, 80, 60];
-      topAgents.forEach((agent, index) => {
-        const rowY = yOffset + 10 + index * 4.5; // Adjusted from yOffset + 8 to yOffset + 10
-        tableX = 15;
-        if (index % 2 === 0) {
-          doc.setFillColor(altShade);
-          doc.rect(tableX, rowY - 4, tableWidth, 4.5, "F");
-        }
-        const rowData = [
-          agent.name,
-          agent.ranking_position,
-          performanceScores[index].toString(),
-          mockInteractions[index].toString(),
-        ];
-        doc.setFont("helvetica", "normal");
-        doc.setFontSize(6);
-        doc.setTextColor(textColor);
-        rowData.forEach((cell, colIndex) => {
-          const cellLines = doc.splitTextToSize(cell, colWidths[colIndex] - 4);
-          doc.text(cellLines, tableX + colWidths[colIndex] / 2, rowY, { align: "center" });
-          tableX += colWidths[colIndex];
-        });
       });
 
       // Footer
