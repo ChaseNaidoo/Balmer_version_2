@@ -125,7 +125,7 @@ const ReportPopup = ({ reportData, onClose }) => {
       doc.setFont("helvetica", "bold");
       doc.setFontSize(12);
       doc.setTextColor(textColor);
-      doc.text("Top AI Agents", 125, agentYOffset);
+      doc.text("Recommended AI Agents", 125, agentYOffset);
       // User icon for title
       doc.setDrawColor(chartGray);
       doc.setLineWidth(0.2);
