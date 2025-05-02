@@ -1,22 +1,4 @@
 /* Popup container */
-.summary_text > p {
-  position: relative;
-  font-size: 16px;
-  color: rgb(232, 230, 230);
-  margin-top: 5px;
-}
-
-.summary_text > .h1 {
-  font-weight: bold;
-  font-size: 24px;
-  
-}
-
-.summary_text > .h2 {
-  font-weight: bold;
-  font-size: 18px;
-  margin-top: 10px;
-}
 .popup_container {
   position: fixed;
   top: 0;
@@ -49,7 +31,7 @@
   opacity: 0;
   transform: scale(0.9);
   animation: popupIn 0.3s ease-out forwards;
-  overflow-y: auto;
+  overflow-y: none;
   box-sizing: border-box;
 }
 
@@ -162,6 +144,28 @@
   border-radius: 20px;
   border: 1px solid rgba(255, 255, 255, 0.3);
   width: 60%;
+  max-height: 400px; /* Set a fixed height to limit the container */
+  overflow-y: auto; /* Enable vertical scrolling when content overflows */
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255, 255, 255, 0.5) transparent;
+}
+
+.summary_text > p {
+  position: relative;
+  font-size: 16px;
+  color: rgb(232, 230, 230);
+  margin-top: 5px;
+}
+
+.summary_text > .h1 {
+  font-weight: bold;
+  font-size: 24px;
+}
+
+.summary_text > .h2 {
+  font-weight: bold;
+  font-size: 18px;
+  margin-top: 10px;
 }
 
 .close_button {
@@ -193,7 +197,7 @@
   transition: background-color 0.3s;
   font-weight: bold;
   margin-top: 20px;
-  margin-left: 1.5%;
+  margin-right: 1%;
 }
 
 .close_button:hover, .download_button:hover {
@@ -244,7 +248,21 @@
     font-size: clamp(12px, 3vw, 14px);
     padding: 15px;
     width: 100%;
+    max-height: 300px; /* Adjusted for smaller screens */
+    overflow-y: auto;
     order: 1;
+  }
+
+  .summary_text > p {
+    font-size: clamp(12px, 3vw, 14px);
+  }
+
+  .summary_text > .h1 {
+    font-size: clamp(18px, 4vw, 20px);
+  }
+
+  .summary_text > .h2 {
+    font-size: clamp(14px, 3vw, 16px);
   }
 
   .agent_bubbles {
@@ -318,7 +336,21 @@
     font-size: clamp(14px, 3vw, 16px);
     padding: 15px;
     width: 100%;
+    max-height: 350px; /* Adjusted for medium screens */
+    overflow-y: auto;
     order: 1;
+  }
+
+  .summary_text > p {
+    font-size: clamp(14px, 3vw, 16px);
+  }
+
+  .summary_text > .h1 {
+    font-size: clamp(20px, 4vw, 22px);
+  }
+
+  .summary_text > .h2 {
+    font-size: clamp(16px, 3vw, 18px);
   }
 
   .agent_bubbles {
@@ -397,6 +429,8 @@
     grid-row: 1 / 3;
     min-width: 0;
     align-self: start; /* Align to top */
+    max-height: 400px; /* Fixed height for tablet */
+    overflow-y: auto;
   }
 
   .agent_bubbles {
@@ -466,6 +500,8 @@
     grid-row: 1 / 3;
     min-width: 0;
     align-self: start; /* Align to top */
+    max-height: 400px; /* Fixed height for laptop */
+    overflow-y: auto;
   }
 
   .agent_bubbles {
@@ -483,8 +519,6 @@
     width: 100%;
     height: 80px;
   }
-
-  
 
   .close_button {
     grid-column: 1 / 4;
@@ -520,6 +554,8 @@
     grid-row: 1 / 3;
     min-width: 0;
     align-self: start; /* Align to top */
+    max-height: 400px; /* Fixed height for desktop */
+    overflow-y: auto;
   }
 
   .agent_bubbles {
@@ -544,6 +580,8 @@
     grid-column: 3 / 4;
     grid-row: 1 / 2;
     align-self: start; /* Align to top */
+    max-height: 400px; /* Fixed height for desktop */
+    overflow-y: auto;
   }
 
   .close_button {

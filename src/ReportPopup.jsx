@@ -79,12 +79,8 @@ const ReportPopup = ({ reportData, onClose }) => {
       yOffset += 5;
       const summaryWidth = 100;
       const summaryPadding = 5;
-      doc.setFillColor(summaryBgColor);
-      doc.setDrawColor(...rgbaToRgb(borderColor));
-      doc.setLineWidth(0.1);
-      doc.roundedRect(15, yOffset, summaryWidth, 90, 3, 3, "FD");
 
-      let textY = yOffset + summaryPadding;
+      // Parse summary text
       const summaryText = reportData.output || "";
       const elements = [];
       const regex = /<p>(.*?)<\/p>|<h1>(.*?)<\/h1>|<h2>(.*?)<\/h2>/g;
@@ -95,6 +91,29 @@ const ReportPopup = ({ reportData, onClose }) => {
         if (match[3]) elements.push({ type: "h2", text: match[3].replace(/<[^>]+>/g, "") });
       }
 
+      // Calculate total height needed for summary text
+      let totalSummaryHeight = 0;
+      let textY = yOffset + summaryPadding;
+      elements.forEach((element) => {
+        const { type, text } = element;
+        let fontSize = 7;
+        if (type === "h1") fontSize = 10;
+        else if (type === "h2") fontSize = 9;
+
+        doc.setFont("helvetica", type === "p" ? "normal" : "bold");
+        doc.setFontSize(fontSize);
+        const lines = doc.splitTextToSize(text, summaryWidth - 2 * summaryPadding);
+        totalSummaryHeight += lines.length * (fontSize * 0.5) + 1; // Line height + spacing
+      });
+      totalSummaryHeight += 2 * summaryPadding; // Account for padding
+
+      // Draw summary box
+      doc.setFillColor(summaryBgColor);
+      doc.setDrawColor(...rgbaToRgb(borderColor));
+      doc.setLineWidth(0.1);
+      doc.roundedRect(15, yOffset, summaryWidth, totalSummaryHeight, 3, 3, "FD");
+
+      // Render summary text
       elements.forEach((element) => {
         const { type, text } = element;
         let fontSize = 7;
@@ -112,16 +131,17 @@ const ReportPopup = ({ reportData, onClose }) => {
         doc.setTextColor(textColor);
         const lines = doc.splitTextToSize(text, summaryWidth - 2 * summaryPadding);
         lines.forEach((line) => {
-          if (textY + fontSize * 0.5 < yOffset + 90 - summaryPadding) {
-            doc.text(line, 15 + summaryPadding, textY);
-            textY += fontSize * 0.5;
-          }
+          doc.text(line, 15 + summaryPadding, textY);
+          textY += fontSize * 0.5;
         });
-        textY += 1;
+        textY += 1; // Extra spacing between elements
       });
 
+      // Update yOffset to account for the actual summary height
+      yOffset = textY + summaryPadding;
+
       // Section 2: Top 4 Agents (Right Side) with Icons
-      let agentYOffset = 35;
+      let agentYOffset = 35; // Align with summary section start
       doc.setFont("helvetica", "bold");
       doc.setFontSize(12);
       doc.setTextColor(textColor);
