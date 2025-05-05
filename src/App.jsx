@@ -109,7 +109,7 @@ const Chatbot = () => {
 
   const sendToWebhook = async (data) => {
     const response = await fetch(
-      "https://charliebessell.app.n8n.cloud/webhook/68b7569f-058a-47b8-9ce9-39ff92328ad7/chat",
+      "https://balmer.app.n8n.cloud/webhook/68b7569f-058a-47b8-9ce9-39ff92328ad7/chat",
       {
         method: "POST",
         headers: { "Content-Type": "application/json" },

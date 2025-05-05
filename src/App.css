@@ -580,6 +580,7 @@
     font-size: clamp(14px, 4vw, 18px);
     top: 35px;
     left: 2%;
+    width: 45%;
   }
 
   .progress-bar-container {
@@ -829,7 +830,7 @@
 
   .chat-container p {
     font-size: clamp(18px, 3vw, 22px);
-    top: 10%;
+    top: 8%;
     left: 2%;
   }
 
