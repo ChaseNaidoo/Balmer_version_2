@@ -829,7 +829,7 @@
 
   .chat-container p {
     font-size: clamp(18px, 3vw, 22px);
-    top: 9%;
+    top: 10%;
     left: 2%;
   }
 
