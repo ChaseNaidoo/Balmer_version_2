@@ -6,7 +6,7 @@ import ReportPopup from "./ReportPopup";
 const Chatbot = () => {
   const [messages, setMessages] = useState([
     {
-      text: "Hi, I am the AI Business Acceleration Discovery audit. If you answer a few questions for me, I can evaluate the areas of your business that could benefit from using AI! This should take 5-10 mins. Let me know if you are ready and we can get started. Otherwise, if you have any more questions, feel free to ask.",
+      text: "Hi, welcome to the AI Business Acceleration Discovery. If you answer a few questions for me, I can evaluate the areas of your business that could benefit from using AI! This should take 5-10 mins. Let me know if you are ready and we can get started. Otherwise, if you have any more questions, feel free to ask.",
       sender: "bot",
     },
   ]);
