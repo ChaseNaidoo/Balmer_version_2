@@ -756,7 +756,7 @@
   }
 
   .chat-box {
-    max-width: 96%;
+    width: 100%;
     margin-top: -8%;
     padding: 20px 10px;
   }
@@ -771,6 +771,14 @@
     margin-left: -5%;
     padding: 10px;
     font-size: clamp(12px, 2.5vw, 14px);
+  }
+
+  .bot-message {
+    margin-left: 0%;
+  }
+
+  .user-message {
+    margin-right: 1%;
   }
 
   .input-container {
