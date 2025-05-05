@@ -1013,3 +1013,22 @@
     margin-top: 7%;
   }
 }
+
+/* Custom media query for devices around 1536x730 */
+@media screen and (min-width: 1441px) and (max-width: 1600px) {
+  .chat-container {
+    padding-right: 1%;
+  }
+
+  .chat-container-logo {
+    top: -6%;
+    left: 1.5%;
+    width: 10rem;
+  }
+
+  .chat-container p {
+    font-size: 22px;
+    top: 9%;
+    left: 1.5%;
+  }
+}
