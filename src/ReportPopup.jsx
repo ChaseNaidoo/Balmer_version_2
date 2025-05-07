@@ -3,10 +3,41 @@ import PropTypes from "prop-types";
 import "./ReportPopup.css";
 import parse from "html-react-parser";
 import { jsPDF } from "jspdf";
+import { marked } from "marked";
 
 const ReportPopup = ({ reportData, onClose }) => {
   const [showPopup, setShowPopup] = useState(true);
   const [isClosing, setIsClosing] = useState(false);
+  const [isClient, setIsClient] = useState(false);
+  const [parsedSummary, setParsedSummary] = useState("");
+
+  // Ensure client-side execution and parse Markdown for UI
+  useEffect(() => {
+    setIsClient(true);
+    try {
+      const summaryText = reportData.output || "";
+      if (summaryText) {
+        const markdownHtml = marked(summaryText);
+        setParsedSummary(markdownHtml);
+      } else {
+        setParsedSummary("<p>No summary available.</p>");
+      }
+    } catch (error) {
+      console.error("Error parsing Markdown for UI:", error);
+      setParsedSummary("<p>Error rendering summary. Please try again.</p>");
+    }
+  }, [reportData.output]);
+
+  // Handle close animation
+  useEffect(() => {
+    if (isClosing) {
+      const timer = setTimeout(() => {
+        setShowPopup(false);
+        onClose();
+      }, 300);
+      return () => clearTimeout(timer);
+    }
+  }, [isClosing, onClose]);
 
   const handleClose = () => {
     setIsClosing(true); // Trigger exit animation
@@ -80,15 +111,39 @@ const ReportPopup = ({ reportData, onClose }) => {
       const summaryWidth = 100;
       const summaryPadding = 5;
 
-      // Parse summary text
+      // Parse Markdown for PDF
       const summaryText = reportData.output || "";
-      const elements = [];
-      const regex = /<p>(.*?)<\/p>|<h1>(.*?)<\/h1>|<h2>(.*?)<\/h2>/g;
-      let match;
-      while ((match = regex.exec(summaryText)) !== null) {
-        if (match[1]) elements.push({ type: "p", text: match[1].replace(/<[^>]+>/g, "") });
-        if (match[2]) elements.push({ type: "h1", text: match[2].replace(/<[^>]+>/g, "") });
-        if (match[3]) elements.push({ type: "h2", text: match[3].replace(/<[^>]+>/g, "") });
+      let elements = [];
+      try {
+        const markdownHtml = marked(summaryText);
+        const parser = new DOMParser();
+        const dom = parser.parseFromString(`<div>${markdownHtml}</div>`, "text/html");
+        elements = Array.from(dom.body.firstChild.childNodes).map((node) => {
+          const tagName = node.tagName ? node.tagName.toLowerCase() : "p";
+          const text = node.textContent.trim();
+          // Treat <li> as numbered headings for bold styling
+          return { type: tagName === "li" ? "numbered" : tagName, text };
+        });
+      } catch (error) {
+        console.error("Error parsing Markdown for PDF:", error);
+        elements = [{ type: "p", text: "Error rendering summary. Please try again." }];
+      }
+
+      if (elements.length === 0) {
+        // Fallback: Split plain text by newlines and detect numbered lines
+        const lines = summaryText.split("\n").filter((line) => line.trim());
+        lines.forEach((line) => {
+          const trimmed = line.trim();
+          if (/^\d+\.\s/.test(trimmed)) {
+            elements.push({ type: "numbered", text: trimmed });
+          } else if (trimmed) {
+            elements.push({ type: "p", text: trimmed });
+          }
+        });
+      }
+
+      if (elements.length === 0) {
+        elements = [{ type: "p", text: "No summary available." }];
       }
 
       // Calculate total height needed for summary text
@@ -99,6 +154,8 @@ const ReportPopup = ({ reportData, onClose }) => {
         let fontSize = 7;
         if (type === "h1") fontSize = 10;
         else if (type === "h2") fontSize = 9;
+        else if (type === "h3") fontSize = 8;
+        else if (type === "numbered") fontSize = 10; // Match h1 for numbered headings
 
         doc.setFont("helvetica", type === "p" ? "normal" : "bold");
         doc.setFontSize(fontSize);
@@ -123,6 +180,12 @@ const ReportPopup = ({ reportData, onClose }) => {
           fontStyle = "bold";
         } else if (type === "h2") {
           fontSize = 9;
+          fontStyle = "bold";
+        } else if (type === "h3") {
+          fontSize = 8;
+          fontStyle = "bold";
+        } else if (type === "numbered") {
+          fontSize = 10; // Match h1 for numbered headings
           fontStyle = "bold";
         }
 
@@ -191,22 +254,11 @@ const ReportPopup = ({ reportData, onClose }) => {
     }
   };
 
-  useEffect(() => {
-    if (isClosing) {
-      const timer = setTimeout(() => {
-        setShowPopup(false);
-        onClose();
-      }, 300);
-      return () => clearTimeout(timer);
-    }
-  }, [isClosing, onClose]);
-
-  const summaryText = reportData.output || "";
   const topAgents = (reportData.agents || []).slice(0, 4).map((item) => item.agent);
 
   return (
     <>
-      {showPopup && (
+      {showPopup && isClient && (
         <div className={`popup_container ${isClosing ? "fadeOut" : ""}`}>
           <div className={`popup_box ${isClosing ? "popupOut" : ""}`}>
             <h2 className="popup_title_report">YOUR AI OPPORTUNITY REPORT</h2>
@@ -221,7 +273,7 @@ const ReportPopup = ({ reportData, onClose }) => {
                 ))}
               </div>
 
-              <div className="summary_text">{parse(summaryText)}</div>
+              <div className="summary_text">{parse(parsedSummary)}</div>
             </div>
 
             <div className="button_container">
