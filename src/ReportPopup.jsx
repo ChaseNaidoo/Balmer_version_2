@@ -126,35 +126,44 @@ const ReportPopup = ({ reportData, onClose }) => {
       const summaryWidth = 100;
       const summaryPadding = 5;
 
-      // Parse Markdown for PDF with refined bold handling
+      // Parse Markdown or HTML for PDF
       const summaryText = reportData.output || "";
       let elements = [];
-      try {
-        const tokens = marked.lexer(summaryText, { gfm: true });
-        elements = tokens.flatMap((token) => {
-          if (token.type === "heading") {
-            return { type: `h${token.depth}`, text: token.text };
-          } else if (token.type === "list") {
-            return token.items.map((item) => ({
-              type: "list_item",
-              text: item.text,
-            }));
-          } else if (token.type === "paragraph") {
-            return { type: "p", text: token.text };
+      if (summaryText) {
+        try {
+          // First attempt to parse as Markdown
+          const tokens = marked.lexer(summaryText, { gfm: true });
+          elements = tokens.flatMap((token) => {
+            if (token.type === "heading") {
+              return { type: `h${token.depth}`, text: token.text };
+            } else if (token.type === "list") {
+              return token.items.map((item) => ({
+                type: "list_item",
+                text: item.text,
+              }));
+            } else if (token.type === "paragraph") {
+              return { type: "p", text: token.text };
+            }
+            return [];
+          });
+        } catch (error) {
+          console.error("Error parsing Markdown for PDF:", error);
+          // Fallback to parse HTML-like structure from parsedSummary
+          const parser = new DOMParser();
+          const docHtml = parser.parseFromString(parsedSummary, "text/html");
+          const paragraphs = docHtml.getElementsByTagName("p");
+          for (let p of paragraphs) {
+            const className = p.getAttribute("class");
+            if (className === "h1") {
+              elements.push({ type: "h1", text: p.textContent });
+            } else if (className === "h2") {
+              elements.push({ type: "h2", text: p.textContent });
+            } else {
+              elements.push({ type: "p", text: p.textContent });
+            }
           }
-          return [];
-        });
-      } catch (error) {
-        console.error("Error parsing Markdown for PDF:", error);
-        elements = summaryText
-          .split("\n")
-          .filter((line) => line.trim())
-          .map((line) => ({
-            type: /^\d+\.\s/.test(line.trim()) ? "list_item" : "p",
-            text: line.trim(),
-          }));
+        }
       }
-
       if (elements.length === 0) {
         elements = [{ type: "p", text: "No summary available." }];
       }
@@ -197,12 +206,11 @@ const ReportPopup = ({ reportData, onClose }) => {
       let totalSummaryHeight = 0;
       let textY = yOffset + summaryPadding;
       elements.forEach((element) => {
-        const fontSize = element.type === "h1" ? 9 : element.type === "h2" ? 8 : element.type === "h3" ? 7 : 7; // Reduced h1 font size to prevent overflow
+        const fontSize = element.type === "h1" ? 9 : element.type === "h2" ? 8 : element.type === "h3" ? 7 : 7;
         const lineHeight = fontSize * 0.5;
         doc.setFontSize(fontSize);
         const segments = splitTextIntoSegments(element.text);
         if (element.type.startsWith("h")) {
-          // For headings, render the entire element in bold
           doc.setFont("helvetica", "bold");
           const headingText = segments.map(segment => segment.text).join(" ");
           const lines = doc.splitTextToSize(headingText.trim(), summaryWidth - 2 * summaryPadding);
@@ -210,10 +218,9 @@ const ReportPopup = ({ reportData, onClose }) => {
             totalSummaryHeight += lineHeight;
             textY += lineHeight;
           });
-          textY += lineHeight; // Add space after heading
+          textY += lineHeight;
           totalSummaryHeight += lineHeight;
         } else {
-          // For paragraphs and list items, handle inline bold segments
           segments.forEach((segment) => {
             doc.setFont("helvetica", segment.bold ? "bold" : "normal");
             const lines = doc.splitTextToSize(segment.text.trim(), summaryWidth - 2 * summaryPadding);
@@ -223,7 +230,7 @@ const ReportPopup = ({ reportData, onClose }) => {
             });
           });
         }
-        textY += 1; // Small gap between elements
+        textY += 1;
         totalSummaryHeight += 1;
       });
       totalSummaryHeight += 2 * summaryPadding;
@@ -242,7 +249,6 @@ const ReportPopup = ({ reportData, onClose }) => {
         doc.setFontSize(fontSize);
         const segments = splitTextIntoSegments(element.text);
         if (element.type.startsWith("h")) {
-          // For headings, render the entire element in bold
           doc.setFont("helvetica", "bold");
           const headingText = segments.map(segment => segment.text).join(" ");
           const lines = doc.splitTextToSize(headingText.trim(), summaryWidth - 2 * summaryPadding);
@@ -251,9 +257,8 @@ const ReportPopup = ({ reportData, onClose }) => {
             doc.text(line, 15 + summaryPadding, textY);
             textY += lineHeight;
           });
-          textY += lineHeight; // Add space after heading
+          textY += lineHeight;
         } else {
-          // For paragraphs and list items, handle inline bold segments
           segments.forEach((segment) => {
             doc.setFont("helvetica", segment.bold ? "bold" : "normal");
             const segmentLines = doc.splitTextToSize(segment.text.trim(), summaryWidth - 2 * summaryPadding);
@@ -264,7 +269,7 @@ const ReportPopup = ({ reportData, onClose }) => {
             });
           });
         }
-        textY += 1; // Small gap between elements
+        textY += 1;
       });
 
       yOffset = textY + summaryPadding;
