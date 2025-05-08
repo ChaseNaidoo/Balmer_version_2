@@ -147,8 +147,7 @@ const Chatbot = () => {
       if (webhookData.report === false) {
         setMessages((prev) => [...prev, { text: webhookData.output, sender: "bot" }]);
       }
-        
-      
+
       if (webhookData.example_answers) {
         setExampleAnswers(webhookData.example_answers);
       }
@@ -182,7 +181,7 @@ const Chatbot = () => {
 
     if (webhookData.output) {
       setMessages((prev) => [...prev, { text: webhookData.output, sender: "bot" }]);
-      
+
       if (webhookData.example_answers) {
         setExampleAnswers(webhookData.example_answers);
       }
@@ -207,6 +206,39 @@ const Chatbot = () => {
     if (reportData) {
       setShowReportPopup(true);
     }
+  };
+
+  const handleTestReport = () => {
+    const mockReportData = {
+      output: `**Balmer Business Acceleration Audit Report**
+
+Dear Chase,
+
+Based on your responses during the Balmer Business Acceleration Audit, we have tailored an AI strategy specifically for your needs at InLogic. Given the constraints of a medium-sized technology firm with a focus on optimising administrative processes, reducing costs, and enhancing efficiency with existing resources, we propose the following AI solutions:
+
+1. **Administrative Data Processing Agent**: Given your emphasis on streamlining administrative processes, this agent is paramount. It automates routine data tasks such as form processing, report generation, and workflow management. By reducing manual administrative data handling between 65-80%, this solution will significantly alleviate the burden on your team, freeing up time for strategic initiatives. Expect a marked improvement in accuracy and compliance, reducing overhead costs and errors associated with mundane data entries. ROI is expected to be observed within the implementation period of 0-30 days.
+
+2. **Document Processing Agent**: Your current expenditure of 10-20 hours weekly on contracts and legal documents presents a clear opportunity for improvement. This agent effectively processes, categorises, and retrieves information from critical documents, thus reducing manual entry errors. With a reduction in data entry tasks by 70-90%, your team can redirect their focus towards core business activities, facilitating greater productivity without increased staffing.
+
+3. **Task Management Agent** (Optional): As your company operates using spreadsheets for task assignments—a method that may not provide the best transparency or workload balance—this agent could revolutionise team efficiency. It offers improved visibility into project statuses and balances workloads equitably across your team. This transformation agent reduces deadline misses by up to 50%, thus greatly enhancing team productivity and morale over a 30-90 day timeframe.
+
+These implementations focus on enhancing resource utilisation and diminishing redundant manual tasks, aligning with your strategic priority of doing more with the same resources. They are tailored to not only address immediate operational challenges such as cost reduction but also to facilitate long-term scalability and enhanced decision-making capability. Let us know how we can assist you further in commencing these implementations.
+
+Yours sincerely,
+
+[Your Name]
+AI Consultant at Balmer Agency`,
+      agents: [
+        { agent: { name: "Administrative Data Processing Agent", ranking_position: "1" } },
+        { agent: { name: "Document Processing Agent", ranking_position: "2" } },
+        { agent: { name: "Task Management Agent", ranking_position: "3" } },
+      ],
+    };
+    setReportData(mockReportData);
+    setMessages((prev) => [
+      ...prev,
+      { text: "Your report is ready! Click 'View Report' to see it.", sender: "bot" },
+    ]);
   };
 
   return (
@@ -318,7 +350,21 @@ const Chatbot = () => {
         </div>
         <div className="button-group">
           <div className="button-row">
-            {/* Removed restart button */}
+            <button
+              className="test-report-button"
+              onClick={handleTestReport}
+              style={{
+                padding: "8px 16px",
+                backgroundColor: "#007bff",
+                color: "white",
+                border: "none",
+                borderRadius: "4px",
+                cursor: "pointer",
+                margin: "5px",
+              }}
+            >
+              TEST REPORT
+            </button>
           </div>
           {reportData && (
             <button className="view_report_button" onClick={handleViewReport}>
