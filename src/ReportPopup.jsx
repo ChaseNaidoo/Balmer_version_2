@@ -119,7 +119,7 @@ const ReportPopup = ({ reportData, onClose }) => {
       doc.text("Summary", 20, yOffset);
 
       // Add Summary icon (replace drawn icon with PNG)
-      const summaryIconUrl = "https://via.placeholder.com/150?text=SummaryIcon"; // Replace with your actual PNG URL
+      const summaryIconUrl = "https://raw.githubusercontent.com/ChaseNaidoo/Balmer_version_2/main/public/icons8-analysis-96.png";
       doc.addImage(summaryIconUrl, "PNG", 15, yOffset - 4, 4, 4);
 
       yOffset += 5;
@@ -197,15 +197,34 @@ const ReportPopup = ({ reportData, onClose }) => {
       let totalSummaryHeight = 0;
       let textY = yOffset + summaryPadding;
       elements.forEach((element) => {
-        const fontSize = element.type === "h1" ? 10 : element.type === "h2" ? 9 : element.type === "h3" ? 8 : 7;
-        doc.setFont("helvetica", element.type.startsWith("h") ? "bold" : "normal");
+        const fontSize = element.type === "h1" ? 9 : element.type === "h2" ? 8 : element.type === "h3" ? 7 : 7; // Reduced h1 font size to prevent overflow
+        const lineHeight = fontSize * 0.5;
         doc.setFontSize(fontSize);
         const segments = splitTextIntoSegments(element.text);
-        segments.forEach((segment) => {
-          doc.setFont("helvetica", segment.bold || element.type.startsWith("h") ? "bold" : "normal");
-          const lines = doc.splitTextToSize(segment.text, summaryWidth - 2 * summaryPadding);
-          totalSummaryHeight += lines.length * (fontSize * 0.5) + 1;
-        });
+        if (element.type.startsWith("h")) {
+          // For headings, render the entire element in bold
+          doc.setFont("helvetica", "bold");
+          const headingText = segments.map(segment => segment.text).join(" ");
+          const lines = doc.splitTextToSize(headingText.trim(), summaryWidth - 2 * summaryPadding);
+          lines.forEach(() => {
+            totalSummaryHeight += lineHeight;
+            textY += lineHeight;
+          });
+          textY += lineHeight; // Add space after heading
+          totalSummaryHeight += lineHeight;
+        } else {
+          // For paragraphs and list items, handle inline bold segments
+          segments.forEach((segment) => {
+            doc.setFont("helvetica", segment.bold ? "bold" : "normal");
+            const lines = doc.splitTextToSize(segment.text.trim(), summaryWidth - 2 * summaryPadding);
+            lines.forEach(() => {
+              totalSummaryHeight += lineHeight;
+              textY += lineHeight;
+            });
+          });
+        }
+        textY += 1; // Small gap between elements
+        totalSummaryHeight += 1;
       });
       totalSummaryHeight += 2 * summaryPadding;
 
@@ -215,52 +234,37 @@ const ReportPopup = ({ reportData, onClose }) => {
       doc.setLineWidth(0.1);
       doc.roundedRect(15, yOffset, summaryWidth, totalSummaryHeight, 3, 3, "FD");
 
-      // Render summary text with segmented bold handling
+      // Re-render summary text inside the box with proper bold handling and spacing
+      textY = yOffset + summaryPadding;
       elements.forEach((element) => {
-        const fontSize = element.type === "h1" ? 10 : element.type === "h2" ? 9 : element.type === "h3" ? 8 : 7;
+        const fontSize = element.type === "h1" ? 9 : element.type === "h2" ? 8 : element.type === "h3" ? 7 : 7;
+        const lineHeight = fontSize * 0.5;
+        doc.setFontSize(fontSize);
         const segments = splitTextIntoSegments(element.text);
-        const baseX = 15 + summaryPadding;
-
-        let currentLine = "";
-        let currentLineBold = segments[0]?.bold || element.type.startsWith("h");
-        const lines = [];
-
-        segments.forEach((segment) => {
-          const segmentLines = doc.splitTextToSize(segment.text, summaryWidth - 2 * summaryPadding);
-          segmentLines.forEach((line, index) => {
-            if (index === 0 && currentLine) {
-              const testLine = currentLine + line;
-              const testWidth = doc.getTextWidth(testLine);
-              if (testWidth <= summaryWidth - 2 * summaryPadding) {
-                currentLine += line;
-              } else {
-                lines.push({ text: currentLine, bold: currentLineBold });
-                currentLine = line;
-                currentLineBold = segment.bold || element.type.startsWith("h");
-              }
-            } else {
-              if (currentLine) {
-                lines.push({ text: currentLine, bold: currentLineBold });
-              }
-              currentLine = line;
-              currentLineBold = segment.bold || element.type.startsWith("h");
-            }
+        if (element.type.startsWith("h")) {
+          // For headings, render the entire element in bold
+          doc.setFont("helvetica", "bold");
+          const headingText = segments.map(segment => segment.text).join(" ");
+          const lines = doc.splitTextToSize(headingText.trim(), summaryWidth - 2 * summaryPadding);
+          lines.forEach((line) => {
+            doc.setTextColor(textColor);
+            doc.text(line, 15 + summaryPadding, textY);
+            textY += lineHeight;
           });
-        });
-
-        if (currentLine) {
-          lines.push({ text: currentLine, bold: currentLineBold });
+          textY += lineHeight; // Add space after heading
+        } else {
+          // For paragraphs and list items, handle inline bold segments
+          segments.forEach((segment) => {
+            doc.setFont("helvetica", segment.bold ? "bold" : "normal");
+            const segmentLines = doc.splitTextToSize(segment.text.trim(), summaryWidth - 2 * summaryPadding);
+            segmentLines.forEach((line) => {
+              doc.setTextColor(textColor);
+              doc.text(line, 15 + summaryPadding, textY);
+              textY += lineHeight;
+            });
+          });
         }
-
-        lines.forEach((line) => {
-          doc.setFont("helvetica", line.bold ? "bold" : "normal");
-          doc.setFontSize(fontSize);
-          doc.setTextColor(textColor);
-          doc.text(line.text, baseX, textY);
-          textY += fontSize * 0.5;
-        });
-
-        textY += 1;
+        textY += 1; // Small gap between elements
       });
 
       yOffset = textY + summaryPadding;
@@ -270,11 +274,11 @@ const ReportPopup = ({ reportData, onClose }) => {
       doc.setFont("helvetica", "bold");
       doc.setFontSize(12);
       doc.setTextColor(textColor);
-      doc.text("Recommended AI Agents", 125, agentYOffset);
+      doc.text("Recommended AI Agents", 126, agentYOffset);
 
       // Add Recommended AI Agents icon (replace drawn icon with PNG)
-      const agentsIconUrl = "https://via.placeholder.com/150?text=AgentsIcon"; // Replace with your actual PNG URL
-      doc.addImage(agentsIconUrl, "PNG", 120, agentYOffset - 2, 2, 2);
+      const agentsIconUrl = "https://raw.githubusercontent.com/ChaseNaidoo/Balmer_version_2/main/public/icons8-combo-chart-96.png";
+      doc.addImage(agentsIconUrl, "PNG", 120, agentYOffset - 4, 5, 5);
 
       agentYOffset += 5;
       const topAgents = (reportData.agents || []).slice(0, 4).map((item) => item.agent);
@@ -287,10 +291,6 @@ const ReportPopup = ({ reportData, onClose }) => {
         doc.setDrawColor(...rgbaToRgb(borderColor));
         doc.setLineWidth(0.1);
         doc.roundedRect(x, y, bubbleWidth, bubbleHeight, 3, 3, "F");
-        doc.setDrawColor(chartGray);
-        doc.setLineWidth(0.2);
-        doc.circle(x + 5, y + bubbleHeight / 2, 1);
-        doc.line(x + 5, y + bubbleHeight / 2 + 1, x + 5, y + bubbleHeight / 2 + 3);
 
         doc.setFont("helvetica", "normal");
         doc.setFontSize(7);
