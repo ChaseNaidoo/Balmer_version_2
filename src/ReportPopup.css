@@ -167,6 +167,29 @@
   margin-top: 10px;
 }
 
+.summary_text .h1 {
+  font-weight: bold;
+  font-size: 24px;
+  color: rgb(232, 230, 230);
+  margin-bottom: 10px;
+}
+
+.summary_text .h2 {
+  font-weight: bold;
+  font-size: 18px;
+  color: rgb(232, 230, 230);
+  margin-top: 10px;
+  margin-bottom: 8px;
+}
+
+.summary_text .h3 {
+  font-weight: bold;
+  font-size: 16px;
+  color: rgb(232, 230, 230);
+  margin-top: 8px;
+  margin-bottom: 6px;
+}
+
 .close_button {
   background-color: transparent;
   color: rgb(232, 230, 230);
