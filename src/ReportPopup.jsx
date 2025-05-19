@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import PropTypes from "prop-types";
 import "./ReportPopup.css";
 import { remark } from "remark";
-import remarkAttr from "remark-attr";
+import remarkParse from "remark-parse";
 import remarkHtml from "remark-html";
 import { jsPDF } from "jspdf";
 
@@ -16,19 +16,29 @@ const ReportPopup = ({ reportData, onClose }) => {
   useEffect(() => {
     setIsClient(true);
     const summaryText = reportData.output || "";
+    console.log("Summary Text Input:", summaryText);
     if (summaryText) {
-      remark()
-        .use(remarkAttr)
-        .use(remarkHtml)
-        .process(summaryText)
-        .then((result) => {
-          setParsedSummary(result.toString());
-        })
-        .catch((error) => {
-          console.error("Error parsing Markdown for UI:", error);
-          setParsedSummary("<p>No summary available.</p>");
-        });
+      try {
+        const processor = remark()
+          .use(remarkParse)
+          .use(remarkHtml);
+        console.log("Remark Processor Initialized");
+        processor
+          .process(summaryText)
+          .then((result) => {
+            console.log("Parsed HTML Output:", result.toString());
+            setParsedSummary(result.toString());
+          })
+          .catch((error) => {
+            console.error("Error parsing Markdown for UI:", error);
+            setParsedSummary("<p>No summary available.</p>");
+          });
+      } catch (error) {
+        console.error("Synchronous error in Markdown parsing:", error);
+        setParsedSummary("<p>No summary available.</p>");
+      }
     } else {
+      console.warn("Summary Text is Empty");
       setParsedSummary("<p>No summary available.</p>");
     }
   }, [reportData.output]);
@@ -56,7 +66,6 @@ const ReportPopup = ({ reportData, onClose }) => {
         format: "a4",
       });
 
-      // Colors to match popup styles
       const bgColor = "#161616";
       const textColor = "#E8E6E6";
       const bubbleBgColor = "rgb(30, 30, 30)";
@@ -70,18 +79,15 @@ const ReportPopup = ({ reportData, onClose }) => {
         return match ? [parseInt(match[1]), parseInt(match[2]), parseInt(match[3])] : [255, 255, 255];
       };
 
-      // Set background
       doc.setFillColor(bgColor);
       doc.rect(0, 0, 210, 297, "F");
       doc.setDrawColor(...rgbaToRgb(borderColor));
       doc.setLineWidth(0.2);
       doc.roundedRect(10, 10, 190, 277, 5, 5, "S");
 
-      // Add logo
       const logoUrl = "https://raw.githubusercontent.com/ChaseNaidoo/Balmer_version_2/main/public/balmer_logo.png";
       doc.addImage(logoUrl, "PNG", 15, 5, 30, 30);
 
-      // Header
       doc.setFillColor(altShade);
       doc.setDrawColor(...rgbaToRgb(borderColor));
       doc.setLineWidth(0.1);
@@ -103,7 +109,6 @@ const ReportPopup = ({ reportData, onClose }) => {
 
       let yOffset = 43;
 
-      // Section 1: Summary Text
       doc.setFont("helvetica", "bold");
       doc.setFontSize(12);
       doc.setTextColor(textColor);
@@ -115,42 +120,67 @@ const ReportPopup = ({ reportData, onClose }) => {
       const summaryWidth = 100;
       const summaryPadding = 5;
 
-      // Parse Markdown for PDF
       const summaryText = reportData.output || "";
       let elements = [];
       if (summaryText) {
-        const tree = remark().use(remarkAttr).parse(summaryText);
-        const walk = (node) => {
-          if (node.type === "heading") {
-            const className = node.data?.hProperties?.className || `h${node.depth}`;
-            const text = node.children.map((child) => child.value || "").join("");
-            elements.push({ type: className, text });
-          } else if (node.type === "paragraph") {
-            const text = node.children.map((child) => child.value || "").join("");
-            elements.push({ type: "p", text });
-          } else if (node.type === "list") {
-            node.children.forEach((item) => {
-              const text = item.children
-                .map((child) => child.children?.map((c) => c.value || "").join("") || "")
+        try {
+          console.log("Parsing Markdown for PDF:", summaryText);
+          const tree = remark().use(remarkParse).parse(summaryText);
+          console.log("Parsed Markdown Tree:", tree);
+          const walk = (node) => {
+            console.log("Processing Node:", node);
+            if (node.type === "heading") {
+              const className = `h${node.depth}`; // Use default heading level
+              const text = node.children
+                .filter((child) => child.type === "text")
+                .map((child) => child.value || "")
                 .join("");
-              elements.push({ type: "list_item", text });
-            });
-          }
-          if (node.children) {
-            node.children.forEach(walk);
-          }
-        };
-        walk(tree);
+              if (text) {
+                elements.push({ type: className, text });
+              }
+            } else if (node.type === "paragraph") {
+              const text = node.children
+                .filter((child) => child.type === "text")
+                .map((child) => child.value || "")
+                .join("");
+              if (text) {
+                elements.push({ type: "p", text });
+              }
+            } else if (node.type === "list") {
+              node.children.forEach((item) => {
+                const text = item.children
+                  .map((child) =>
+                    child.children
+                      ?.filter((c) => c.type === "text")
+                      .map((c) => c.value || "")
+                      .join("") || ""
+                  )
+                  .join("");
+                if (text) {
+                  elements.push({ type: "list_item", text });
+                }
+              });
+            }
+            if (node.children) {
+              node.children.forEach(walk);
+            }
+          };
+          walk(tree);
+          console.log("Extracted Elements for PDF:", elements);
+        } catch (error) {
+          console.error("Error parsing Markdown for PDF:", error);
+          elements = [{ type: "p", text: "No summary available." }];
+        }
       }
       if (elements.length === 0) {
+        console.warn("No elements extracted from Markdown");
         elements = [{ type: "p", text: "No summary available." }];
       }
 
-      // Calculate summary height
       let totalSummaryHeight = 0;
       let textY = yOffset + summaryPadding;
       elements.forEach((element) => {
-        const fontSize = element.type === "h1" ? 9 : element.type === "h2" ? 8 : element.type === "h3" ? 7 : 7;
+        const fontSize = element.type === "h2" ? 9 : element.type === "h3" ? 8 : 7; // Adjust for default heading levels
         const lineHeight = fontSize * 0.5;
         doc.setFontSize(fontSize);
         doc.setFont("helvetica", element.type.startsWith("h") ? "bold" : "normal");
@@ -164,21 +194,25 @@ const ReportPopup = ({ reportData, onClose }) => {
       });
       totalSummaryHeight += 2 * summaryPadding;
 
-      // Draw summary box
       doc.setFillColor(summaryBgColor);
       doc.setDrawColor(...rgbaToRgb(borderColor));
       doc.setLineWidth(0.1);
       doc.roundedRect(15, yOffset, summaryWidth, totalSummaryHeight, 3, 3, "FD");
 
-      // Render summary text
       textY = yOffset + summaryPadding;
       elements.forEach((element) => {
-        const fontSize = element.type === "h1" ? 9 : element.type === "h2" ? 8 : element.type === "h3" ? 7 : 7;
+        const fontSize = element.type === "h2" ? 9 : element.type === "h3" ? 8 : 7;
         const lineHeight = fontSize * 0.5;
         doc.setFontSize(fontSize);
         doc.setFont("helvetica", element.type.startsWith("h") ? "bold" : "normal");
         const lines = doc.splitTextToSize(element.text.trim(), summaryWidth - 2 * summaryPadding);
         lines.forEach((line) => {
+          if (textY > 270) {
+            doc.addPage();
+            textY = 20;
+            doc.setFillColor(summaryBgColor);
+            doc.roundedRect(15, textY - summaryPadding, summaryWidth, totalSummaryHeight, 3, 3, "FD");
+          }
           doc.setTextColor(textColor);
           doc.text(line, 15 + summaryPadding, textY);
           textY += lineHeight;
@@ -188,7 +222,6 @@ const ReportPopup = ({ reportData, onClose }) => {
 
       yOffset = textY + summaryPadding;
 
-      // Section 2: Top 4 Agents
       let agentYOffset = 43;
       doc.setFont("helvetica", "bold");
       doc.setFontSize(12);
@@ -218,7 +251,6 @@ const ReportPopup = ({ reportData, onClose }) => {
         doc.text(`Rank: ${agent.ranking_position}`, x + bubbleWidth / 2 + 2, y + 15, { align: "center" });
       });
 
-      // Footer
       doc.setFontSize(8);
       doc.setTextColor(chartGray);
       doc.text("BALMER AGENCY - AI Business Acceleration Discovery", 105, 285, { align: "center" });
