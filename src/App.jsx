@@ -181,7 +181,9 @@ const Chatbot = () => {
     setIsTyping(false);
 
     if (webhookData.output) {
-      setMessages((prev) => [...prev, { text: webhookData.output, sender: "bot" }]);
+      if(!webhookData.report) {
+        setMessages((prev) => [...prev, { text: webhookData.output, sender: "bot" }]);
+      }
       
       if (webhookData.example_answers) {
         setExampleAnswers(webhookData.example_answers);
