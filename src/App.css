@@ -20,6 +20,34 @@
     inset 0 0 var(--glow-intensity, 0px) rgba(255, 255, 255, 0.05);
 }
 
+.report-buttons {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+}
+
+.download_button {
+display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: transparent;
+  color: rgb(235, 233, 233);
+  padding: 10px 20px;
+  width: 13rem;
+  height: 2.5rem;
+  font-size: 14px;
+  cursor: pointer;
+  font-weight: bold;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  transition: 0.3s;
+  gap: 15px;
+  border-radius: 50px;
+}
+
+.download_button:hover {
+  background-color: #3a3a3a;
+}
+
 /* Background grid */
 .background-grid {
   display: grid;
@@ -113,8 +141,11 @@
   justify-content: center;
   background-color: transparent;
   color: rgb(235, 233, 233);
-  padding: 7px 20px;
+  padding: 5px 20px;
+  width: 12rem;
+  height: 2.5rem;
   font-size: 14px;
+  margin-top: 0.95rem;
   cursor: pointer;
   font-weight: bold;
   border: 1px solid rgba(255, 255, 255, 0.3);
@@ -127,49 +158,10 @@
   background-color: #ffffff48;
 }
 
-.restart_button {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background-color: transparent;
-  color: rgb(235, 233, 233);
-  padding: 7px 20px;
-  font-size: 14px;
-  cursor: pointer;
-  font-weight: bold;
-  border: 1px solid rgba(255, 255, 255, 0.3);
-  transition: 0.3s;
-  gap: 15px;
-  border-radius: 50px;
-}
-
-.restart_button:hover {
-  background-color: #ffffff20;
-}
-
 .arrow-icon, .arrow-icon2 {
   height: 12px;
   width: 35px;
   margin: 0;
-}
-
-.review_answers_button {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background-color: transparent;
-  border: 1px solid rgba(255, 255, 255, 0.3);
-  border-radius: 50px;
-  color: white;
-  padding: 7px 20px;
-  font-size: 14px;
-  cursor: pointer;
-  transition: 0.3s;
-  gap: 20px;
-}
-
-.review_answers_button:hover {
-  background-color: #ffffff20;
 }
 
 .submit_button {
