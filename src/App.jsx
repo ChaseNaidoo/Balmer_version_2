@@ -546,7 +546,7 @@ const Chatbot = () => {
                   VIEW REPORT<img src="/Group 1.png" alt="Arrow" className="arrow-icon" />
                 </button>
               )}
-              <button className="download_button" onClick={handleDownloadPDF}>
+              <button className="report_download_button" onClick={handleDownloadPDF}>
                 DOWNLOAD PDF<img src="/Group 1.png" alt="Arrow" className="arrow-icon" />
               </button>
             </div>

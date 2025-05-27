@@ -26,25 +26,27 @@
   justify-content: center;
 }
 
-.download_button {
-display: flex;
+.report_download_button {
+  display: flex;
   align-items: center;
   justify-content: center;
   background-color: transparent;
   color: rgb(235, 233, 233);
-  padding: 10px 20px;
-  width: 13rem;
-  height: 2.5rem;
-  font-size: 14px;
+  padding: clamp(8px, 1.5vw, 12px) clamp(16px, 2.5vw, 20px);
+  width: clamp(10rem, 20vw, 12rem);
+  height: clamp(2rem, 5vw, 2.5rem);
+  font-size: clamp(12px, 2vw, 14px);
   cursor: pointer;
   font-weight: bold;
   border: 1px solid rgba(255, 255, 255, 0.3);
-  transition: 0.3s;
-  gap: 15px;
+  transition: background-color 0.3s;
+  gap: clamp(10px, 2vw, 15px);
   border-radius: 50px;
+  min-width: 100px;
+  max-width: 90%;
 }
 
-.download_button:hover {
+.report_download_button:hover {
   background-color: #3a3a3a;
 }
 
@@ -55,7 +57,7 @@ display: flex;
   grid-template-rows: auto auto;
   gap: 1px 0;
   max-width: 100%;
-  margin-left: 0%;
+  margin-left: 0;
 }
 
 /* Style all images */
@@ -141,21 +143,21 @@ display: flex;
   justify-content: center;
   background-color: transparent;
   color: rgb(235, 233, 233);
-  padding: 5px 20px;
-  width: 12rem;
-  height: 2.5rem;
-  font-size: 14px;
-  margin-top: 0.95rem;
+  padding: clamp(6px, 1.5vw, 8px) clamp(16px, 2.5vw, 20px);
+  width: clamp(9rem, 18vw, 11rem);
+  height: clamp(2rem, 5vw, 2.5rem);
+  font-size: clamp(12px, 2vw, 14px);
   cursor: pointer;
   font-weight: bold;
   border: 1px solid rgba(255, 255, 255, 0.3);
-  transition: 0.3s;
-  gap: 15px;
+  transition: background-color 0.5s, color 0.3s;
+  gap: clamp(10px, 2vw, 15px);
   border-radius: 50px;
+  min-width: 90px;
 }
 
 .view_report_button:hover {
-  background-color: #ffffff48;
+  background-color: rgba(255, 255, 255, 0.3);
 }
 
 .arrow-icon, .arrow-icon2 {
@@ -170,18 +172,21 @@ display: flex;
   justify-content: center;
   background-color: transparent;
   color: white;
-  padding: 6px 20px;
-  font-size: 14px;
+  padding: clamp(6px, 1.5vw, 8px) clamp(16px, 2.5vw, 20px);
+  font-size: clamp(12px, 2vw, 14px);
   cursor: pointer;
   border: 1px solid rgba(255, 255, 255, 0.3);
   border-radius: 50px;
-  transition: 0.3s;
-  gap: 25px;
+  transition: background-color 0.3s;
+  gap: clamp(15px, 2.5vw, 20px);
   align-self: flex-start;
+  width: clamp(8rem, 15vw, 10rem);
+  min-width: 80px;
+  max-width: 90%;
 }
 
 .submit_button:hover {
-  background-color: #ffffff20;
+  background-color: rgba(255, 255, 255, 0.2);
 }
 
 .example-answers-label {
@@ -209,17 +214,19 @@ display: flex;
   background-color: transparent;
   color: rgb(235, 233, 233);
   border: 1px solid rgba(255, 255, 255, 0.3);
-  padding: 8px 16px;
-  border-radius: 10px 10px 0px 10px;
-  font-size: 14px;
+  padding: clamp(6px, 1.5vw, 8px) clamp(12px, 2vw, 16px);
+  border-radius: 10px 10px 0 10px;
+  font-size: clamp(12px, 2vw, 14px);
   cursor: pointer;
-  transition: 0.3s;
+  transition: background-color 0.3s, transform 0.3s;
   text-align: center;
+  min-width: 60px;
+  max-width: 80%;
 }
 
 .example-answer-button:hover {
-  scale: 1.05;
-  background-color: #ffffff20;
+  transform: scale(1.05);
+  background-color: rgba(255, 255, 255, 0.2);
 }
 
 /* Particles */
@@ -394,7 +401,7 @@ display: flex;
 .progress-bar {
   height: 100%;
   background: rgb(232, 230, 230);
-  filter: drop-shadow(2px 0px 5px rgba(255, 255, 255, 1));
+  filter: drop-shadow(2px 0 5px rgba(255, 255, 255, 1));
   transition: width 0.4s ease;
 }
 
@@ -435,7 +442,7 @@ display: flex;
   background: linear-gradient(45deg, rgba(10, 10, 10, 0.2), rgba(48, 48, 48, 0.4));
   color: rgb(232, 230, 230);
   align-self: flex-start;
-  border-radius: 10px 10px 10px 0px;
+  border-radius: 10px 10px 10px 0;
   padding: 10px 20px;
   box-shadow: -5px 5px 12px -12px rgb(0, 0, 0);
 }
@@ -444,7 +451,7 @@ display: flex;
   background: linear-gradient(45deg, rgba(255, 255, 255, 0.1), rgba(48, 48, 48, 0.4));
   color: rgb(232, 230, 230);
   align-self: flex-end;
-  border-radius: 10px 10px 0px 10px;
+  border-radius: 10px 10px 0 10px;
   padding: 10px 20px;
   margin-right: 30px;
 }
@@ -490,7 +497,7 @@ display: flex;
   padding: 10px 20px;
   cursor: pointer;
   font-size: 14px;
-  transition: 0.3s;
+  transition: filter 0.3s;
 }
 
 .send-button svg {
@@ -550,9 +557,9 @@ display: flex;
 .typing-indicator span:nth-child(3) { animation-delay: 0.4s; }
 
 @keyframes typing {
-  0% { opacity: 0.3; transform: translateY(0px); }
+  0% { opacity: 0.3; transform: translateY(0); }
   50% { opacity: 1; transform: translateY(-5px); }
-  100% { opacity: 0.3; transform: translateY(0px); }
+  100% { opacity: 0.3; transform: translateY(0); }
 }
 
 /* Small Mobile (max-width: 576px) */
@@ -570,7 +577,7 @@ display: flex;
 
   .chat-container p {
     font-size: clamp(14px, 4vw, 18px);
-    top: 35px;
+    top: 2.8rem;
     left: 2%;
     width: 45%;
   }
@@ -583,7 +590,7 @@ display: flex;
   .chat-box {
     max-width: 100%;
     height: 82%;
-    margin-top: -2%;
+    margin-top: -8%;
     margin-bottom: 2%;
     padding: 15px 5px;
     border-radius: 12px;
@@ -667,39 +674,16 @@ display: flex;
     gap: 8px;
   }
 
-  .restart_button,
-  .view_report_button,
-  .review_answers_button, 
-  .submit_button {
-    padding: 5px 10px;
-    font-size: 10px;
-    margin-left: -10%;
-  }
-
-  .restart_button {
-    margin-left: -6%;
-  }
-
-  .review_answers_button {
-    margin-left: 0%;
-  }
-
-  .submit_button {
-    margin-left: 5%;
-  }
-
-  .view_report_button {
-    margin-left: -5%;
-  }
-
   .example-answers-container {
     margin: 80px 5% 0 0;
     max-width: 90%;
   }
 
   .example-answer-button {
-    padding: 5px 10px;
+    padding: clamp(4px, 1.5vw, 6px) clamp(8px, 2vw, 12px);
     font-size: clamp(9px, 2.5vw, 11px);
+    min-width: 50px;
+    max-width: 90%;
   }
 
   .particle:nth-child(n+11) {
@@ -712,203 +696,200 @@ display: flex;
   }
 
   .circle-text {
-    top: 10%;
-    left: 75%;
+    top: 13%;
+    left: 80%;
     width: 10px;
     height: 10px;
   }
 
   .circle-text .text {
     font-size: 12px;
+    font-weight: bold;
   }
 
   .circle-text .text span {
     height: 5px;
     transform-origin: 0 5px;
   }
+
+  .report-buttons {
+    margin-left: -3rem;
+    gap: clamp(5px, 7px, 9px);
+  }
+
+  .view_report_button {
+    padding: clamp(6px, 1.5vw, 8px) clamp(12px, 2vw, 16px);
+    font-size: clamp(10px, 2.5vw, 10px);
+    width: clamp(11rem, 20vw, 12rem);
+    min-width: 80px;
+    max-width: 40%;
+    height: clamp(2rem, 4vw, 2.5rem);
+    border-radius: 50px;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+  }
+
+  .report_download_button {
+    padding: clamp(6px, 1.5vw, 8px) clamp(12px, 2vw, 16px);
+    font-size: clamp(10px, 2.5vw, 10px);
+    width: clamp(10rem, 2vw, 12rem);
+    min-width: 90px;
+    max-width: 44%;
+    height: clamp(2rem, 4vw, 2.5rem);
+    border-radius: 50px;
+  }
 }
 
 /* Large Mobile (577px - 768px) */
 @media screen and (min-width: 577px) and (max-width: 768px) {
   .chat-container {
-    padding: 0 2%;
+    padding-right: 1.5%;
   }
 
   .chat-container-logo {
-    width: 6rem;
+    width: 8rem;
     top: -4%;
-    left: 2%;
+    left: 1.5%;
     margin: 15px 0 0 0;
   }
 
   .chat-container p {
-    font-size: clamp(16px, 4vw, 20px);
-    top: 45px;
-    left: 2%;
+    font-size: clamp(16px, 2.5vw, 18px);
+    top: 10.5%;
+    left: 1.5%;
+    max-width: 30%;
   }
 
   .chat-box {
+    max-width: 60%;
+    margin-top: -55%;
+    margin-bottom: 2%;
+    padding: 30px 12px 1% 12px;
+    border-radius: 15px;
+  }
+
+  .progress-bar-container {
+    height: 0.3rem;
+    margin-top: -2%;
+    margin-left: 0;
     width: 100%;
-    margin-top: -8%;
-    padding: 20px 10px;
   }
 
   .messages {
-    margin-bottom: -58%;
-    height: 80%;
+    margin-bottom: -57%;
+    height: 85%;
+    padding: 15px;
   }
 
   .message {
-    max-width: 70%;
-    margin-left: -5%;
-    padding: 10px;
+    max-width: 68%;
+    padding: 10px 16px;
     font-size: clamp(12px, 2.5vw, 14px);
   }
 
   .bot-message {
-    margin-left: 0%;
+    margin-left: -3%;
   }
 
   .user-message {
-    margin-right: 1%;
+    margin-right: -0.5%;
   }
 
   .input-container {
-    margin: 60% 0 3% 3%;
+    margin: 58% 0 3% 1.5%;
+    width: 100%;
   }
 
   .input-box {
     padding: 10px 15px;
     font-size: clamp(12px, 2.5vw, 14px);
+    border-radius: 15px;
   }
 
   .send-button {
-    padding: 10px 25px;
-  }
-
-  .background-grid {
-    max-width: 65%;
-    margin: -20% 10% 10% 30%;
-    
+    padding: 10px 20px;
   }
 
   .button-group {
-    margin: 10px 0 15px 9%;
-    gap: 8px;
+    margin: -0.5rem 0 20px 2%;
+    gap: 10px;
   }
 
   .button-row {
     flex-direction: row;
-    gap: 10px;
+    gap: 8px;
   }
 
-  .restart_button,
-  .view_report_button,
-  .review_answers_button {
-    padding: 6px 15px;
-    font-size: 12px;
+  .report-buttons {
+    margin-bottom: -0.7rem;
+  }
+
+  .view_report_button {
+    padding: clamp(6px, 1.5vw, 8px) clamp(12px, 2vw, 16px);
+    font-size: clamp(12px, 2.5vw, 13px);
+    width: clamp(11rem, 20vw, 12rem);
+    min-width: 80px;
+    max-width: 60%;
+    height: clamp(2rem, 4vw, 2.5rem);
+    border-radius: 50px;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+  }
+
+  .report_download_button {
+    padding: clamp(6px, 1.5vw, 8px) clamp(12px, 2vw, 16px);
+    font-size: clamp(12px, 2.5vw, 13px);
+    width: clamp(12rem, 20vw, 13rem);
+    min-width: 90px;
+    max-width: 60%;
+    height: clamp(2rem, 4vw, 2.5rem);
+    border-radius: 50px;
+  }
+
+  .example-answer-button {
+    padding: clamp(6px, 1.5vw, 8px) clamp(10px, 2vw, 14px);
+    font-size: clamp(12px, 2.5vw, 14px);
+    min-width: 60px;
+    max-width: 85%;
+    border-radius: 10px 10px 0 10px;
+  }
+
+  .example-answers-container {
+    margin: 80px 20px 0 0;
+    max-width: 85%;
   }
 
   .chat-box.glow-active::before,
   .chat-box.glow-active::after {
-    animation: none;
+    animation: glowPulse 2.5s infinite ease-in-out;
+  }
+
+  .background-grid {
+    margin-top: 8rem;
+    margin-right: 8rem;
+    width: 80vw;
+  }
+
+  .circle-text {
+    margin-top: -10rem;
+    margin-left: -2rem;
   }
 }
 
 /* Tablet (769px - 1024px) */
 @media screen and (min-width: 769px) and (max-width: 1024px) {
   .chat-container {
-    padding-right: 2%;
-  }
-
-  .chat-container-logo {
-    width: 8rem;
-    top: -4%;
-    left: 2%;
-    margin: 15px 0 0 0;
-  }
-
-  .chat-container p {
-    font-size: clamp(18px, 3vw, 22px);
-    top: 8%;
-    left: 2%;
-  }
-
-  .background-grid {
-    width: 85%;
-    margin-top: 10%;
-    margin-right: 14.3%;
-  }
-
-  .circle-text {
-    margin-top: -22%;
-    margin-left: -1%;
-  }
-
-  .chat-box {
-    max-width: 58%;
-    margin-top: -50%;
-    margin-bottom: 2%;
-    padding: 30px 15px;
-  }
-
-  .progress-bar-container {
-    height: 0.2rem;
-    margin-top: -1%;
-  }
-
-  .messages {
-    margin-bottom: -55%;
-    height: 85%;
-  }
-
-  .message {
-    max-width: 65%;
-    padding: 12px;
-    font-size: 14px;
-  }
-
-  .user-message {
-    margin-right: 0.5%;
-  }
-
-  .input-container {
-    margin: 55% 0 3% 3%;
-  }
-
-  .button-group {
-    margin: 10px 0 20px 2%;
-    gap: 10px;
-  }
-
-  .button-row {
-    flex-direction: row;
-    gap: 10px;
-  }
-
-  .restart_button,
-  .view_report_button,
-  .review_answers_button, .submit_button {
-    padding: 5px 20px;
-    font-size: 12px;
-  }
-}
-
-/* Laptop (1025px - 1440px) */
-@media screen and (min-width: 1025px) and (max-width: 1440px) {
-  .chat-container {
     padding-right: 1.5%;
   }
 
   .chat-container-logo {
+    width: 11rem;
     top: -7%;
     left: 1.5%;
-    margin: 20px 0 0 0;
+    margin: 15px 0 0 0;
   }
 
   .chat-container p {
-    font-size: 20px;
-    top: 65px;
+    font-size: clamp(18px, 2vw, 20px);
+    top: 12%;
     left: 1.5%;
   }
 
@@ -922,22 +903,144 @@ display: flex;
 
   .chat-box {
     max-width: 52%;
-    margin-top: -55%;
-    padding: 40px 20px 1% 20px;
+    margin-top: -52%;
+    margin-bottom: 1%;
+    padding: 35px 15px 1% 15px;
+    border-radius: 15px;
   }
 
   .progress-bar-container {
     height: 0.3rem;
+    margin-top: -2%;
+    margin-left: 0;
+    width: 100%;
+  }
+
+  .messages {
+    margin-bottom: -57%;
+    height: 87%;
+    padding: 20px;
+  }
+
+  .message {
+    max-width: 68%;
+    padding: 10px 18px;
+    font-size: clamp(13px, 2vw, 14px);
+  }
+
+  .bot-message {
+    margin-left: -3%;
+  }
+
+  .user-message {
+    margin-right: -0.5%;
+  }
+
+  .input-container {
+    margin: 58% 0 3% 1.5%;
+    width: 100%;
+  }
+
+  .button-group {
+    margin: -0.7rem 0 20px 2%;
+    gap: 10px;
+  }
+
+  .button-row {
+    flex-direction: row;
+    gap: 10px;
+  }
+
+  .report-buttons {
+    margin-bottom: -1rem;
+    margin-left: 0;
+  }
+
+  .view_report_button {
+    padding: clamp(6px, 1.5vw, 8px) clamp(12px, 2vw, 16px);
+    font-size: clamp(12px, 2vw, 14px);
+    width: clamp(11rem, 19vw, 13rem);
+    min-width: 90px;
+    max-width: 60%;
+    height: clamp(2rem, 4vw, 2.5rem);
+    border-radius: 50px;
+  }
+
+  .report_download_button {
+    padding: clamp(6px, 1.5vw, 8px) clamp(12px, 2vw, 16px);
+    font-size: clamp(12px, 2vw, 14px);
+    width: clamp(12rem, 20vw, 14rem);
+    min-width: 90px;
+    max-width: 60%;
+    height: clamp(2rem, 4vw, 2.5rem);
+    border-radius: 50px;
+  }
+
+  .example-answer-button {
+    padding: clamp(6px, 1.5vw, 8px) clamp(10px, 2vw, 14px);
+    font-size: clamp(12px, 2vw, 14px);
+    min-width: clamp(60px, 10vw, 80px);
+    max-width: 80%;
+    border-radius: 10px 10px 0 10px;
+  }
+
+  .background-grid {
+    margin-bottom: -5.4rem;
+  }
+}
+
+/* Laptop (1025px - 1440px) */
+@media screen and (min-width: 1025px) and (max-width: 1440px) {
+  .chat-container {
+    padding-right: 1.5%;
+  }
+
+  .chat-container-logo {
+    top: -9%;
+    left: 1.5%;
+    margin: 20px 0 0 0;
+    width: 11rem;
+  }
+
+  .chat-container p {
+    font-size: 20px;
+    top: 10.3%;
+    left: 1.5%;
+  }
+
+  .background-grid {
+    margin-top: 7%;
+  }
+
+  .circle-text {
+    margin-top: 1%;
+  }
+
+  .chat-box {
+    max-width: 52%;
+    margin-top: -55%;
+    margin-bottom: 2%;
+    padding: 40px 20px 1% 20px;
+    border-radius: 15px;
+  }
+
+  .progress-bar-container {
+    height: 0.3rem;
+    margin-top: -3%;
+    margin-left: 0;
+    width: 100%;
   }
 
   .messages {
     margin-bottom: -58%;
     height: 88%;
+    padding: 20px;
   }
 
   .message {
     max-width: 70%;
     padding: 10px 20px;
+    font-size: clamp(13px, 2vw, 15px);
   }
 
   .bot-message {
@@ -948,17 +1051,13 @@ display: flex;
     margin-right: -1%;
   }
 
-  .submit_button {
-    margin-left: -4.5%;
-  }
-
   .input-container {
     margin: 60% 0 3% 1.5%;
     width: 100%;
   }
 
   .button-group {
-    margin: 10px 0 20px 2%;
+    margin: -1rem 0 20px 2%;
     gap: 10px;
   }
 
@@ -967,26 +1066,55 @@ display: flex;
     gap: 10px;
   }
 
-  .restart_button,
-  .view_report_button,
-  .review_answers_button, .submit_button {
-    padding: 5px 20px;
-    font-size: 12px;
+  .report-buttons {
+    margin-bottom: -1rem;
+    margin-left: 0;
   }
 
-  .progress-bar-container {
-    margin-top: -3%;
-    margin-left: 0%;
-    width: 100%;
+  .view_report_button {
+    padding: clamp(6px, 1.5vw, 8px) clamp(14px, 2vw, 18px);
+    font-size: clamp(14px, 2vw, 15px);
+    width: clamp(12rem, 16vw, 12rem);
+    min-width: 100px;
+    max-width: 60%;
+    height: clamp(2rem, 4vw, 2.5rem);
+    border-radius: 50px;
+  }
+
+  .report_download_button {
+    padding: clamp(6px, 1.5vw, 8px) clamp(14px, 2vw, 18px);
+    font-size: clamp(14px, 2vw, 15px);
+    width: clamp(13rem, 16vw, 15rem);
+    min-width: 100px;
+    max-width: 60%;
+    height: clamp(2rem, 4vw, 2.5rem);
+    border-radius: 50px;
+  }
+
+  .example-answer-button {
+    padding: clamp(6px, 1.5vw, 8px) clamp(12px, 2vw, 16px);
+    font-size: clamp(13px, 2vw, 15px);
+    min-width: 80px;
+    max-width: 75%;
+    border-radius: 10px 10px 0 10px;
+  }
+
+  .background-grid {
+    margin-top: 6.5rem;
   }
 }
 
 /* Desktop (1441px and up) */
 @media screen and (min-width: 1441px) {
+  .chat-container {
+    padding-right: 1.5%;
+  }
+
   .chat-container-logo {
     top: -5%;
     left: 1.5%;
     margin: 20px 0 0 0;
+    width: 11rem;
   }
 
   .chat-container p {
@@ -995,9 +1123,39 @@ display: flex;
     left: 1.6%;
   }
 
+  .background-grid {
+    margin-top: 7%;
+  }
+
+  .circle-text {
+    margin-top: -8%;
+  }
+
   .chat-box {
     max-width: 50%;
     margin-top: -55.5%;
+    margin-bottom: 2%;
+    padding: 40px 20px 1% 20px;
+    border-radius: 15px;
+  }
+
+  .progress-bar-container {
+    height: 0.3rem;
+    margin-top: -3%;
+    margin-left: 0;
+    width: 100%;
+  }
+
+  .messages {
+    margin-bottom: -58%;
+    height: 88%;
+    padding: 20px;
+  }
+
+  .message {
+    max-width: 70%;
+    padding: 10px 20px;
+    font-size: clamp(14px, 2vw, 16px);
   }
 
   .button-group {
@@ -1010,8 +1168,32 @@ display: flex;
     gap: 10px;
   }
 
-  .background-grid {
-    margin-top: 7%;
+  .view_report_button{
+    padding: clamp(8px, 1.5vw, 10px) clamp(14px, 2vw, 18px);
+    font-size: clamp(14px, 2vw, 16px);
+    width: clamp(11rem, 15vw, 13rem);
+    min-width: 110px;
+    max-width: 30%;
+    height: clamp(2.5rem, 4vw, 3rem);
+    border-radius: 50px;
+  }
+
+  .report_download_button {
+    padding: clamp(8px, 1.5vw, 10px) clamp(14px, 2vw, 18px);
+    font-size: clamp(14px, 2vw, 16px);
+    width: clamp(12rem, 15vw, 14rem);
+    min-width: 110px;
+    max-width: 35%;
+    height: clamp(2.5rem, 4vw, 3rem);
+    border-radius: 50px;
+  }
+
+  .example-answer-button {
+    padding: clamp(8px, 1.5vw, 10px) clamp(14px, 2vw, 18px);
+    font-size: clamp(14px, 2vw, 16px);
+    min-width: 90px;
+    max-width: 70%;
+    border-radius: 10px 10px 0 10px;
   }
 }
 
@@ -1024,12 +1206,69 @@ display: flex;
   .chat-container-logo {
     top: -6%;
     left: 1.5%;
+    margin: 20px 0 0 0;
     width: 10rem;
   }
 
   .chat-container p {
     font-size: 22px;
-    top: 9%;
+    top: 4.5rem;
     left: 1.5%;
+  }
+
+  .background-grid{
+    margin-top: 7rem;
+  }
+
+  .view_report_button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: transparent;
+    color: rgb(235, 233, 233);
+    padding: clamp(8px, 1.5vw, 10px) clamp(16px, 2.5vw, 20px);
+    width: clamp(13rem, 15vw, 13rem);
+    height: clamp(2rem, 4vw, 2.5rem);
+    font-size: clamp(13px, 2vw, 15px);
+    cursor: pointer;
+    font-weight: bold;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    transition: background-color 0.3s;
+    gap: clamp(10px, 2vw, 15px);
+    border-radius: 50px;
+    min-width: 100px;
+    max-width: 50%;
+  }
+
+  .report_download_button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: transparent;
+    color: rgb(235, 233, 233);
+    padding: clamp(8px, 1.5vw, 10px) clamp(16px, 2.5vw, 20px);
+    width: clamp(14rem, 15vw, 14rem);
+    height: clamp(2rem, 4vw, 2.5rem);
+    font-size: clamp(13px, 2vw, 15px);
+    cursor: pointer;
+    font-weight: bold;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    transition: background-color 0.3s;
+    gap: clamp(10px, 2vw, 15px);
+    border-radius: 50px;
+    min-width: 100px;
+    max-width: 50%;
+  }
+
+  .example-answer-button {
+    padding: clamp(7px, 1.5vw, 9px) clamp(12px, 2vw, 16px);
+    font-size: clamp(13px, 2vw, 15px);
+    min-width: 80px;
+    max-width: 75%;
+    border-radius: 10px 10px 0 10px;
+  }
+
+  .circle-text {
+    margin-top: 1.4rem;
   }
 }
