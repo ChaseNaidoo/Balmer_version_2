@@ -8,13 +8,13 @@ import "./App.css";
 const Chatbot = () => {
   const [messages, setMessages] = useState([
     {
-      text: "Hi, welcome to the AI Business Acceleration Discovery. If you answer a few questions for me, I can evaluate the areas of your business that could benefit from using AI! This should take 5-10 mins. Let me know if you are ready and we can get started. Otherwise, if you have any more questions, feel free to ask.",
+      text: "Hi, welcome to our AI Business Acceleration Discovery assistant. By answering a few questions, we can pinpoint areas where AI could enhance your business operations. This usually takes 5–10 minutes. Ready to start? Feel free to ask any questions if you’re unsure!",
       sender: "bot",
     },
   ]);
   const [userInput, setUserInput] = useState("");
   const [isTyping, setIsTyping] = useState(false);
-  const [sessionId] = useState(() => crypto.randomUUID());
+  const [sessionId, ] = useState(() => crypto.randomUUID());
   const [exampleAnswers, setExampleAnswers] = useState([]);
   const [reportData, setReportData] = useState(null);
   const [popupBlocked, setPopupBlocked] = useState(false);
@@ -50,7 +50,7 @@ const Chatbot = () => {
       const distToTop = y;
       const distToBottom = box.height - y;
 
-      const minDist = Math.min(distToLeft, distToRight, distToTop, distToBottom);
+      const minDist = Math.min(...distToLeft, distToRight, distToTop, distToBottom);
       const borderThreshold = 50;
 
       if (minDist < borderThreshold) {
@@ -64,7 +64,7 @@ const Chatbot = () => {
           closestBorder = "right";
           relativePosition = y / box.height;
         } else if (minDist === distToTop) {
-          closestBorder = "top";
+            closestBorder = "top";
           relativePosition = x / box.width;
         } else {
           closestBorder = "bottom";
@@ -120,7 +120,7 @@ const Chatbot = () => {
         setPopupBlocked(true);
         setMessages((prev) => [
           ...prev,
-          { text: "Failed to open report in new tab. Please allow popups or click the 'Open Report' button below.", sender: "bot" },
+          { text: "Failed to open report in new tab. Please allow popups or click the 'View Report' button below.", sender: "bot" },
         ]);
       } else {
         setMessages((prev) => [
@@ -407,11 +407,11 @@ const Chatbot = () => {
         doc.setDrawColor(...rgbaToRgb(borderColor));
         doc.setLineWidth(0.1);
         doc.roundedRect(x, y, bubbleWidth, bubbleHeight, 3, 3, "F");
-        doc.setFont("helvetica", "normal");
+        doc.setFont("helvetica", "bold"); // Bold for agent name
         doc.setFontSize(7);
         const nameLines = doc.splitTextToSize(agent.name, bubbleWidth * 0.6 - 5);
         doc.text(nameLines, x + bubbleWidth / 2 + 2, y + 8, { align: "center" });
-        doc.setFont("helvetica", "bold");
+        doc.setFont("helvetica", "normal"); // Normal for ranking
         doc.setFontSize(10);
         doc.setTextColor(textColor);
         doc.text(`Rank: ${agent.ranking_position}`, x + bubbleWidth / 2 + 2, y + 15, { align: "center" });
@@ -541,11 +541,9 @@ const Chatbot = () => {
           </div>
           {reportData && (
             <div className="report-buttons">
-              {popupBlocked && (
-                <button className="view_report_button" onClick={handleOpenReport}>
-                  VIEW REPORT<img src="/Group 1.png" alt="Arrow" className="arrow-icon" />
-                </button>
-              )}
+              <button className="view_report_button" onClick={handleOpenReport}>
+                VIEW REPORT<img src="/Group 1.png" alt="Arrow" className="arrow-icon" />
+              </button>
               <button className="report_download_button" onClick={handleDownloadPDF}>
                 DOWNLOAD PDF<img src="/Group 1.png" alt="Arrow" className="arrow-icon" />
               </button>

@@ -229,11 +229,11 @@ const ReportPage = () => {
         doc.setLineWidth(0.1);
         doc.roundedRect(x, y, bubbleWidth, bubbleHeight, 3, 3, "F");
         doc.setFont("helvetica", "bold"); // Changed to bold for agent name
-        doc.setFontSize(7);
+        doc.setFontSize(10);
         const nameLines = doc.splitTextToSize(agent.name, bubbleWidth * 0.6 - 5);
         doc.text(nameLines, x + bubbleWidth / 2 + 2, y + 8, { align: "center" });
         doc.setFont("helvetica", "normal"); // Changed to normal for ranking
-        doc.setFontSize(10);
+        doc.setFontSize(7);
         doc.setTextColor(textColor);
         doc.text(`Rank: ${agent.ranking_position}`, x + bubbleWidth / 2 + 2, y + 15, { align: "center" });
       });
